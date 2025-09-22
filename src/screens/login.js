@@ -3,160 +3,42 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text, Alert, Dimensions  } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import axios from 'axios';
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
-// import { Auth } from "aws-amplify";
-// import "react-native-get-random-values";
-// import "react-native-url-polyfill/auto";
-import {
-  CognitoUserPool,
-  CognitoUser,
-  AuthenticationDetails,
-} from "amazon-cognito-identity-js";
-
-const poolData = {
-  region: 'us-east-1',
-  UserPoolId: "us-east-1_xZml1eRpm",
-  ClientId: "3gfcpc1oe82o10kgqlv78kb6v7",
-};
-
-const userPool = new CognitoUserPool(poolData);
+import AuthService from '../services/AuthService';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secureTextVisible, setSecureTextVisible] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
 
-  async function signInWithPasswordAuth(email, password) {
-  const response = await fetch(
-    `https://cognito-idp.${poolData.region}.amazonaws.com/`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-amz-json-1.1",
-        "X-Amz-Target": "AWSCognitoIdentityProviderService.InitiateAuth",
-      },
-      body: JSON.stringify({
-        AuthFlow: "USER_PASSWORD_AUTH",
-        ClientId: poolData.ClientId,
-        AuthParameters: {
-          USERNAME: email,
-          PASSWORD: password,
-        },
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Invalid email or password");
-  }
-
-  const authResult = await response.json();
-
-  if (authResult.ChallengeName) {
-    if (authResult.ChallengeName === "NEW_PASSWORD_REQUIRED") {
-      console.log("NEW_PASSWORD_REQUIRED challenge received");
-      console.log("Session token:", authResult.Session);
-      console.log(
-        "Session token length:",
-        authResult.Session ? authResult.Session.length : "undefined"
-      );
-      console.log("Challenge parameters:", authResult.ChallengeParameters);
-
-      // Create a custom error with session data
-      const error = new Error("NEW_PASSWORD_REQUIRED");
-      error.session = authResult.Session;
-      error.challengeParameters = authResult.ChallengeParameters;
-      throw error;
-    }
-    throw new Error(
-      "Additional authentication required. Please contact your administrator."
-    );
-  }
-
-  return console.log(authResult.AuthenticationResult);
-}
-
-// Example usag
 
 
   const onLogin = async () => {
+    if (!email || !password) {
+      setError('Please enter both email and password.');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
 
     try {
-    const user = await signInWithPasswordAuth(email, password);
-    console.log("User tokens:", user);
-  } catch (err) {
-    if (err.message === "NEW_PASSWORD_REQUIRED") {
-      console.log("User must set a new password. Session:", err.session);
-    } else {
-      console.error("Sign-in failed:", err);
+      const result = await AuthService.login(email, password);
+      if (result.success) {
+        navigation.replace('Home');
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+      console.error('Login error:', err);
+    } finally {
+      setLoading(false);
     }
-  }
-  //   console.log("Login started")
-  //   const user = new CognitoUser({ Username: email, Pool: userPool });
-  // const authDetails = new AuthenticationDetails({ Username: email, Password: password });
-  // console.log(authDetails);
-  // try{
-  // user.authenticateUser(authDetails, {
-  //   onSuccess: (result) => {
-  //     Alert.alert('Login success', '');
-  //     console.log("✅ JWT:", result.getAccessToken().getJwtToken());
-  //   },
-  //   onFailure: (err) => {
-  //     Alert.alert('Login Error', '');
-  //     console.error("❌ Error:", err);
-  //   },
-  // });
-// }catch(err){
-//   console.log(err)
-// }
-  //    try {
-  //   const user = await Auth.signIn(email, password);
-
-  //   if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
-  //     console.log("User must change password.");
-  //      Alert.alert('change password', '');
-  //     // handle password reset flow here
-  //   } else {
-  //      Alert.alert('Login success', '');
-  //     console.log("Login success:", user);
-  //   }
-  //   return user;
-  // } catch (err) {
-  //    Alert.alert('Login Error', '');
-  //   console.error("Login error:", err);
-  //   throw err;
-  // }
-//     if (!email || !password) {
-//       Alert.alert('Error', 'Please enter both email and password.');
-//       return;
-//     }
-//     setLoading(true);
-//       // replace with your API URL
-//     axios.post('https://dummyjson.com/auth/login', {
-//     username: email,
-//     password: password,
-//       },
-//     {
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//   }).then(response => {
-//   console.log('Success:', response.data);
-// //  Alert.alert('Success', JSON.stringify(response.data));
-//   setLoading(false);
-//   navigation.navigate('Home')
-// })
-// .catch(error => {
-//   console.error('Error:', error.response?.data || error.message);
-//    Alert.alert('Error', error.response?.data || error.message);
-//   setLoading(false);
-// });
-    
   };
 
    const [fontsLoaded] = Font.useFonts({
@@ -220,8 +102,12 @@ export default function LoginScreen({ navigation }) {
         }
       />
 
-       <TouchableOpacity onPress={onLogin} style={styles.button}>
-        <Text style={styles.buttonContent}>Login</Text>
+      {error ? (
+        <Text style={styles.errorText}>{error}</Text>
+      ) : null}
+
+       <TouchableOpacity onPress={onLogin} style={styles.button} disabled={loading}>
+        <Text style={styles.buttonContent}>{loading ? 'Logging in...' : 'Login'}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={onForgotPassword} style={styles.forgotContainer}>
@@ -345,6 +231,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#45BC50',
     marginTop:20,
+    fontFamily: "InstrumentSans-Regular",
+  },
+  errorText: {
+    fontSize: 14,
+    color: '#FF6B6B',
+    marginTop: 8,
+    marginBottom: 8,
+    textAlign: 'center',
     fontFamily: "InstrumentSans-Regular",
   },
   footer: {

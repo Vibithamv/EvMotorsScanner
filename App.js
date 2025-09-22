@@ -3,9 +3,7 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 import Navigation from './src/navigation/index';
-// import "./amplifyConfig";
-// import "react-native-get-random-values";
-// import "react-native-url-polyfill/auto";
+import './src/awsConfig';
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
 import { Buffer } from 'buffer';
