@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "EVMotorsScanner",
+    "slug": "EVMotorsScanner",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/evmotors_logo.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.evmotors.inventory.scanner"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-barcode-scanner"
+    ]
+  }
+}
