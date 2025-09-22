@@ -61,6 +61,34 @@ class AuthService {
   async getToken() {
     return await AsyncStorage.getItem('cognitoToken');
   }
+
+  async isAuthenticated() {
+    try {
+      const token = await this.getToken();
+      return token !== null && token !== undefined;
+    } catch (err) {
+      console.error('Error checking authentication status:', err);
+      return false;
+    }
+  }
+
+  async getCurrentUser() {
+    try {
+      const token = await this.getToken();
+      if (token) {
+        // You can decode the JWT token here to get user info
+        // For now, we'll just return a basic user object
+        return {
+          isAuthenticated: true,
+          token: token,
+        };
+      }
+      return null;
+    } catch (err) {
+      console.error('Error getting current user:', err);
+      return null;
+    }
+  }
 }
 
 export default new AuthService();
