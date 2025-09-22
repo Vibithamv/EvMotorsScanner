@@ -1,5 +1,6 @@
 import { Amplify } from 'aws-amplify';
 import { COGNITO_CONFIG } from './config/cognito';
+import '@aws-amplify/react-native';
 
 Amplify.configure({
   Auth: {
