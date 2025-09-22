@@ -1,51 +1,57 @@
-import { CognitoUserPool, CognitoUser, AuthenticationDetails } from 'amazon-cognito-identity-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COGNITO_CONFIG } from '../config/cognito';
 
-const userPool = new CognitoUserPool({
-  UserPoolId: COGNITO_CONFIG.userPoolId,
-  ClientId: COGNITO_CONFIG.userPoolWebClientId,
-});
-
 class AuthService {
   async login(username, password) {
-    return new Promise((resolve) => {
-      const authenticationDetails = new AuthenticationDetails({
-        Username: username,
-        Password: password,
-      });
+    try {
+      const response = await fetch(
+        `https://cognito-idp.${COGNITO_CONFIG.region}.amazonaws.com/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-amz-json-1.1",
+            "X-Amz-Target": "AWSCognitoIdentityProviderService.InitiateAuth",
+          },
+          body: JSON.stringify({
+            AuthFlow: "USER_PASSWORD_AUTH",
+            ClientId: COGNITO_CONFIG.userPoolWebClientId,
+            AuthParameters: {
+              USERNAME: username,
+              PASSWORD: password,
+            },
+          }),
+        }
+      );
 
-      const cognitoUser = new CognitoUser({
-        Username: username,
-        Pool: userPool,
-      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        return { success: false, error: errorData.message || "Invalid username or password" };
+      }
 
-      cognitoUser.authenticateUser(authenticationDetails, {
-        onSuccess: async (result) => {
-          try {
-            const token = result.getIdToken().getJwtToken();
-            await AsyncStorage.setItem('cognitoToken', token);
-            resolve({ success: true, token });
-          } catch (err) {
-            resolve({ success: false, error: 'Failed to store token' });
-          }
-        },
-        onFailure: (err) => {
-          resolve({ success: false, error: err.message || 'Login failed' });
-        },
-        newPasswordRequired: (userAttributes, requiredAttributes) => {
-          resolve({ success: false, error: 'New password required. Please contact administrator.' });
-        },
-      });
-    });
+      const authResult = await response.json();
+
+      if (authResult.ChallengeName) {
+        if (authResult.ChallengeName === "NEW_PASSWORD_REQUIRED") {
+          return { success: false, error: "New password required. Please contact administrator." };
+        }
+        return { success: false, error: "Additional authentication required. Please contact your administrator." };
+      }
+
+      // Store the access token
+      if (authResult.AuthenticationResult && authResult.AuthenticationResult.AccessToken) {
+        await AsyncStorage.setItem('cognitoToken', authResult.AuthenticationResult.AccessToken);
+        return { success: true, token: authResult.AuthenticationResult.AccessToken };
+      }
+
+      return { success: false, error: "Authentication failed" };
+    } catch (err) {
+      console.error('Login error:', err);
+      return { success: false, error: err.message || 'Login failed' };
+    }
   }
 
   async logout() {
     try {
-      const cognitoUser = userPool.getCurrentUser();
-      if (cognitoUser) {
-        cognitoUser.signOut();
-      }
       await AsyncStorage.removeItem('cognitoToken');
     } catch (err) {
       console.error('Logout failed', err);
