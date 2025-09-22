@@ -25,7 +25,7 @@ const AppNavigation = () => {
           headerBackVisible: false,
     headerTitle: () => (
       <Image 
-        source={require('../assets/evmotors_logo.png')} 
+        source={require('../../assets/evmotors_logo.png')} 
         style={{ width: 180, height: 60, resizeMode: 'contain' }}
       />
     ),

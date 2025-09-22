@@ -42,8 +42,8 @@ export default function LoginScreen({ navigation }) {
   };
 
    const [fontsLoaded] = Font.useFonts({
-    "InstrumentSans-Regular": require("../assets/fonts/InstrumentSans-Regular.ttf"),
-    "InstrumentSans-Bold": require("../assets/fonts/InstrumentSans-Bold.ttf"),
+    "InstrumentSans-Regular": require("../../assets/fonts/InstrumentSans-Regular.ttf"),
+    "InstrumentSans-Bold": require("../../assets/fonts/InstrumentSans-Bold.ttf"),
   });
 
   if (!fontsLoaded) {
@@ -58,7 +58,7 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
     
-      <Image source={require('../assets/logo_icon.png')} style={styles.logo} resizeMode="contain" />
+      <Image source={require('../../assets/logo_icon.png')} style={styles.logo} resizeMode="contain" />
 
  <View style={styles.loginHeader}>
       <Text style={styles.header1}>Check-In</Text>
@@ -115,7 +115,7 @@ export default function LoginScreen({ navigation }) {
       </TouchableOpacity>
 
        <Image
-        source={require('../assets/background_logo.png')}
+        source={require('../../assets/background_logo.png')}
         style={[ {position:'absolute', bottom:10}]} 
         resizeMode="contain"
       />
