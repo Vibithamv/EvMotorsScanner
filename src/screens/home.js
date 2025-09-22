@@ -1,8 +1,8 @@
 // screens/HomeScreen.tsx
 
 import { View, StyleSheet } from 'react-native';
-
 import { Button } from 'react-native-paper';
+import { Colors, CommonStyles } from '../utils/AssetManager';
 
 export default function HomeScreen({navigation}) {
 
@@ -34,25 +34,18 @@ navigation.navigate('NewScan')
   );
 }
 
-// Theme colors
-const theme = {
-  primary: '#005B9A',  // replace with EV Motors primary color
-  background: '#FFFFFF',
-  text: '#333333',
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
-    backgroundColor: theme.background,
+    backgroundColor: Colors.background,
     justifyContent: 'center',
   },
-    button: {
+  button: {
     marginTop: 8,
     borderRadius: 8,
-    backgroundColor: '#4CAF50',
-    marginBottom:20
+    backgroundColor: Colors.secondary,
+    marginBottom: 20,
   },
   buttonContent: {
     paddingVertical: 8,

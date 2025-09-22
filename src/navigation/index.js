@@ -7,6 +7,7 @@ import LoginScreen from '../screens/login';
 import HomeScreen from '../screens/home';
 import NewScanScreen from '../screens/newscan';
 import { Images } from '../utils/AssetManager';
+import { getHeaderOptions } from '../components/HeaderWithLogout';
 //import ForgotPasswordScreen from './screens/ForgotPasswordScreen'; // Create this screen too
 
 const Stack = createNativeStackNavigator();
@@ -28,21 +29,16 @@ const AppNavigation = () => {
         <Stack.Screen 
           name="Home" 
           component={HomeScreen} 
-         options={{
-          headerBackVisible: false,
-    headerTitle: () => (
-      <Image 
-        source={Images.evmotorsLogo} 
-        style={{ width: 180, height: 60, resizeMode: 'contain' }}
-      />
-    ),
-  }}
+          options={({ navigation }) => getHeaderOptions(navigation, {
+            headerBackVisible: false,
+          })}
         />
         <Stack.Screen 
           name="NewScan" 
           component={NewScanScreen} 
-         options={{ headerBackTitle : 'New Scan'
-  }}
+          options={({ navigation }) => getHeaderOptions(navigation, {
+            headerBackTitle: 'New Scan',
+          })}
         />
       </Stack.Navigator>
     </NavigationContainer>
