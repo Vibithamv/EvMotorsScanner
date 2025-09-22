@@ -6,6 +6,7 @@ import { TextInput, Button } from 'react-native-paper';
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import AuthService from '../services/AuthService';
+import { Images, Fonts, Colors, CommonStyles, AssetHelpers } from '../utils/AssetManager';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -41,10 +42,7 @@ export default function LoginScreen({ navigation }) {
     }
   };
 
-   const [fontsLoaded] = Font.useFonts({
-    "InstrumentSans-Regular": require("../../assets/fonts/InstrumentSans-Regular.ttf"),
-    "InstrumentSans-Bold": require("../../assets/fonts/InstrumentSans-Bold.ttf"),
-  });
+   const [fontsLoaded] = Font.useFonts(AssetHelpers.getFontConfig());
 
   if (!fontsLoaded) {
     return <AppLoading />;
@@ -58,7 +56,7 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
     
-      <Image source={require('../../assets/logo_icon.png')} style={styles.logo} resizeMode="contain" />
+      <Image source={Images.logoIcon} style={styles.logo} resizeMode="contain" />
 
  <View style={styles.loginHeader}>
       <Text style={styles.header1}>Check-In</Text>
@@ -76,8 +74,8 @@ export default function LoginScreen({ navigation }) {
         autoCapitalize="none"
         style={styles.input}
       //  mode="outlined"
-      textColor='#ffff'
-        theme={{ colors: { primary: theme.primary, accent: theme.primary } }}
+      textColor={Colors.text}
+        theme={{ colors: { primary: Colors.primary, accent: Colors.primary } }}
       />
 
      <Text style={styles.password}>
@@ -91,12 +89,12 @@ export default function LoginScreen({ navigation }) {
         secureTextEntry={secureTextVisible}
       //  mode="outlined"
         style={styles.input}
-        textColor='#ffff'
-        theme={{ colors: { primary: theme.primary, accent: theme.primary } }}
+        textColor={Colors.text}
+        theme={{ colors: { primary: Colors.primary, accent: Colors.primary } }}
         right={
           <TextInput.Icon
             icon={secureTextVisible ? 'eye-off' : 'eye'}
-            color='#5F6B91'
+            color={Colors.textSecondary}
             onPress={() => setSecureTextVisible(!secureTextVisible)}
           />
         }
@@ -115,7 +113,7 @@ export default function LoginScreen({ navigation }) {
       </TouchableOpacity>
 
        <Image
-        source={require('../../assets/background_logo.png')}
+        source={Images.backgroundLogo}
         style={[ {position:'absolute', bottom:10}]} 
         resizeMode="contain"
       />
@@ -125,29 +123,14 @@ export default function LoginScreen({ navigation }) {
   );
 }
 
-// Theme colors
-const theme = {
-  primary: '#005B9A',  // replace with EV Motors primary color
-  background: '#FFFFFF',
-  text: '#333333',
-};
+// Theme colors are now managed by AssetManager
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingLeft: 24,
-    paddingRight:24,
-    backgroundColor: '#0E1325',
-    justifyContent: 'center',
+    ...CommonStyles.container,
   },
   logo: {
-    width: 48,
-    height: 48,
-    alignSelf: 'center',
-    position:'absolute',
-    top:56
-   // marginTop:70
-   // tintColor: '#4CAF50'
+    ...CommonStyles.logo,
   },
   loginHeader:{
     flexDirection: 'row',  // this makes children sit in a row
@@ -157,11 +140,9 @@ const styles = StyleSheet.create({
     top:126
   },
   header1:{
-    fontSize:32,
-    fontStyle:'bold',
-    fontWeight:700,
-    color:'#ffff',
-    fontFamily: "InstrumentSans-Bold",
+    ...CommonStyles.header1,
+    position:'absolute',
+    top:126,
   },
   loginText:{
     fontSize:16,
@@ -174,47 +155,24 @@ const styles = StyleSheet.create({
     fontFamily: "InstrumentSans-Bold",
   },
   header2:{
-  fontSize:32,
-    //fontStyle:'bold',
-    fontWeight:400,
-    color:'#45BC50',
-    fontFamily: "InstrumentSans-Bold",
+    ...CommonStyles.header2,
   },
   username:{
-    fontSize:14,
-    color:'#ffff',
-    marginBottom:5,
-   // marginTop:100,
-   fontFamily: "InstrumentSans-Regular",
+    ...CommonStyles.label,
   },
    password:{
-    fontSize:14,
-    color:'#ffff',
-    marginBottom:5,
+    ...CommonStyles.label,
     marginTop:5,
-    fontFamily: "InstrumentSans-Regular",
   },
   input: {
-    height:44,
-    borderRadius:4,
-    marginBottom: 10,
-    //color:'#162142',
-    backgroundColor:'#162142'
+    ...CommonStyles.input,
   },
   button: {
-    height: 44,
+    ...CommonStyles.primaryButton,
     marginTop: 8,
-    borderRadius: 4,
-    backgroundColor: '#45BC50',
-     justifyContent: 'center',   // centers vertically
-    alignItems: 'center',  
   },
   buttonContent: {
-    color:'#0000',
-    fontSize:14,
-    fontWeight:700,
-    textAlign: 'center',
-    fontFamily: "InstrumentSans-Bold",
+    ...CommonStyles.primaryButtonText,
   },
   forgotContainer: {
     alignItems: 'center',
@@ -229,25 +187,14 @@ const styles = StyleSheet.create({
   },
   forgotText: {
     fontSize: 14,
-    color: '#45BC50',
+    color: Colors.secondary,
     marginTop:20,
     fontFamily: "InstrumentSans-Regular",
   },
   errorText: {
-    fontSize: 14,
-    color: '#FF6B6B',
-    marginTop: 8,
-    marginBottom: 8,
-    textAlign: 'center',
-    fontFamily: "InstrumentSans-Regular",
+    ...CommonStyles.errorText,
   },
   footer: {
-     position: "absolute",
-    bottom: 20,
-    color: "#666",
-    fontSize: 12,
-    alignSelf:'center',
-    fontFamily: "InstrumentSans-Regular",
-
+    ...CommonStyles.footer,
   }
 });
