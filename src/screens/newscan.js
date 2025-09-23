@@ -1,18 +1,38 @@
 // screens/NewScanScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { Text, View, Button, StyleSheet } from 'react-native';
-//import { BarCodeScanner } from 'expo-barcode-scanner';
-import { CameraView, useCameraPermissions } from "expo-camera";
-import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Text, View, Button, Alert } from 'react-native';
+import { useCameraPermissions } from "expo-camera";
+import { useVinValidation } from '../hooks/useVinValidation';
+import { useEscalation } from '../hooks/useEscalation';
+import { useFormSubmission } from '../hooks/useFormSubmission';
+import ScannerView from '../components/ScannerView';
+import ManualEntryForm from '../components/ManualEntryForm';
+import VehicleForm from '../components/VehicleForm';
+import EscalationPrompt from '../components/EscalationPrompt';
+import { commonStyles } from '../styles/commonStyles';
 
 
 export default function NewScanScreen() {
-
-    const [permission, requestPermission] = useCameraPermissions();
+  const [permission, requestPermission] = useCameraPermissions();
   const [scannedData, setScannedData] = useState(null);
   const [scanning, setScanning] = useState(true);
+  const [manualCode, setManualCode] = useState('');
+  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [showVehicleForm, setShowVehicleForm] = useState(false);
+  const [selectedLot, setSelectedLot] = useState('');
+  const [selectedKeys, setSelectedKeys] = useState(1);
+  const [showLotDropdown, setShowLotDropdown] = useState(false);
+
+  // Custom hooks
+  const vinValidation = useVinValidation();
+  const escalation = useEscalation();
+  const formSubmission = useFormSubmission(
+    vinValidation.vehicleInfo, 
+    selectedLot, 
+    selectedKeys, 
+    escalation
+  );
 
    useEffect(() => {
     if (!permission) {
@@ -33,79 +53,127 @@ export default function NewScanScreen() {
     );
   }
 
+  // Event handlers
   const handleBarcodeScanned = ({ type, data }) => {
     setScanning(false);
     setScannedData(`Type: ${type}\nData: ${data}`);
-    getVinValidationApi({vin:data});
+    handleCodeValidation(data);
   };
 
-  const getVinValidationApi = async ({vin}) => {
-    try {
-      const response = await axios.get('http://192.168.1.96:3000/api/vin/validate',
-        { params: { vin }, 
-          headers: { 'Content-Type': 'application/json',
-              Authorization: "Bearer "+ await AsyncStorage.getItem('cognitoToken')
-         // Authorization: "Bearer eyJraWQiOiJ4NG9kVkI2Rlc5YVdHYm9zN1JLTmNkY09KSzJcL01xZHl3b2ozdmU1cTh0bz0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxNDU4ZTQwOC1lMDUxLTcwMWQtYTg0Yy1kMjc0M2QyMzRkNzMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV94Wm1sMWVScG0iLCJjbGllbnRfaWQiOiIzZ2ZjcGMxb2U4Mm8xMGtncWx2NzhrYjZ2NyIsIm9yaWdpbl9qdGkiOiI3NDUxYmQxMS05NjAzLTRhZWMtODQ3ZS00M2ExYjZkNWFhOGMiLCJldmVudF9pZCI6ImFhODdmY2MzLTIzNTAtNDNjOS1iNjUzLTA2Y2I1ZjEyMWYxNCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE3NTg2MTE2MjUsImV4cCI6MTc1ODYxNTIyNSwiaWF0IjoxNzU4NjExNjI1LCJqdGkiOiI0Nzc2Mzc0Yy02MmU0LTQ5NmQtODAwYy01NGY4YzAzZGU1NDYiLCJ1c2VybmFtZSI6IjE0NThlNDA4LWUwNTEtNzAxZC1hODRjLWQyNzQzZDIzNGQ3MyJ9.FdE5Hr0OQ03DGIy8CzgGDxvybi2bie1jC6JZzskTmUJN0koLzSM545NpEya_YfeiIqJDTteqOFpBPvZMBF4Ab83PMp3moN-xLdpoMeabXLCiHrmrWQr8kc1Rt8_iFFrm0XM4PjjW6FA4NiYZVni59JFuO3-GBKQfqgqKXraSnTPSuZBmSOvhLmKYXAJyuoB8Zrv6T5En6ZcibPme8f5CQ28qajpTdURLJHyscgJmVKNhjkhhywcS0qzHEgitsjjbKzzOaHCjFuXyHv0-U9Rqpa49lgieQOFKuri1rCll3e5mlp3MmOealbWFzg9Q4gO2evNLCr-00W_CqEUtB6ytgA"
-         } }
-      )
-      .then((res) => {
-        console.log('response',res.data);
-      });
-    } catch (error) {
-      console.error('Error fetching VIN data:', error);
+  const handleManualCodeSubmit = () => {
+    if (manualCode.trim()) {
+      handleCodeValidation(manualCode.trim());
+    } else {
+      Alert.alert('Error', 'Please enter a valid code');
     }
   };
 
+  const handleCodeValidation = async (code) => {
+    const result = await vinValidation.validateCode(code);
+    if (result.success) {
+      setShowVehicleForm(true);
+      setScanning(false);
+      setShowManualEntry(false);
+    } else {
+      setScannedData(`Code: ${code}\nStatus: Invalid\nError: ${result.error}`);
+    }
+  };
 
+  const handleLotSelection = (lot) => {
+    setSelectedLot(lot);
+    setShowLotDropdown(false);
+  };
+
+  const handleKeysSelection = (keys) => {
+    setSelectedKeys(keys);
+  };
+
+  const handleFormSubmit = async () => {
+    const result = await formSubmission.handleFormSubmit();
+    if (result?.success) {
+      resetForm();
+    }
+  };
+
+  const handleEscalation = async () => {
+    const result = await escalation.handleEscalation();
+    if (result?.success) {
+      resetForm();
+    }
+  };
+
+  const resetForm = () => {
+    vinValidation.setVehicleInfo(null);
+    setSelectedLot('');
+    setSelectedKeys(1);
+    setShowVehicleForm(false);
+    setScannedData(null);
+    setScanning(true);
+    escalation.resetEscalation();
+  };
 
   return (
-     <View style={styles.container}>
+    <View style={commonStyles.container}>
       {scanning ? (
-        <View  style={styles.container}>
-        <CameraView
-          style={StyleSheet.absoluteFillObject}
+        <ScannerView
           onBarcodeScanned={handleBarcodeScanned}
-          barcodeScannerSettings={{
-            barcodeTypes: ["qr", "ean13", "code128"], // choose types you want
+          onManualEntry={() => setShowManualEntry(true)}
+          isValidating={vinValidation.isValidating}
+        />
+      ) : showManualEntry ? (
+        <ManualEntryForm
+          manualCode={manualCode}
+          isValidating={vinValidation.isValidating}
+          onCodeChange={setManualCode}
+          onSubmit={handleManualCodeSubmit}
+          onBackToScanner={() => {
+            setShowManualEntry(false);
+            setManualCode('');
+            setScannedData(null);
           }}
         />
-        {/* <Button title="Scan" onPress={() => {
-            handleBarcodeScanned({ type: 'manual', data: 'LMGBB1L84T3144268'})
-          }} /> */}
-        </View>
+      ) : showVehicleForm ? (
+        <VehicleForm
+          vehicleInfo={vinValidation.vehicleInfo}
+          availableLots={vinValidation.availableLots}
+          selectedLot={selectedLot}
+          selectedKeys={selectedKeys}
+          showLotDropdown={showLotDropdown}
+          isSubmitting={formSubmission.isSubmitting}
+          onLotSelect={handleLotSelection}
+          onToggleDropdown={() => setShowLotDropdown(!showLotDropdown)}
+          onKeysSelect={handleKeysSelection}
+          onSubmit={handleFormSubmit}
+          onStartOver={resetForm}
+        />
+      ) : escalation.showEscalationPrompt ? (
+        <EscalationPrompt
+          escalationPayload={escalation.escalationPayload}
+          isEscalating={escalation.isEscalating}
+          onEscalation={handleEscalation}
+          onCancel={escalation.handleEscalationCancel}
+        />
       ) : (
-        <View style={styles.center}>
-          <Text style={styles.result}>{scannedData}</Text>
-          <Button title="Scan Again" onPress={() => setScanning(true)} />
+        <View style={commonStyles.center}>
+          <Text style={commonStyles.result}>{scannedData}</Text>
+          <View style={commonStyles.buttonContainer}>
+            <Button 
+              title="Scan Again" 
+              onPress={() => {
+                setScanning(true);
+                setScannedData(null);
+              }}
+              disabled={vinValidation.isValidating}
+            />
+            <Button 
+              title="Manual Entry" 
+              onPress={() => setShowManualEntry(true)}
+              disabled={vinValidation.isValidating}
+            />
+          </View>
+          {vinValidation.isValidating && <Text style={commonStyles.loadingText}>Validating...</Text>}
         </View>
       )}
-      
-     
     </View>
   );
 }
-
-// Theme colors
-const theme = {
-  primary: '#005B9A',  // replace with EV Motors primary color
-  background: '#FFFFFF',
-  text: '#333333',
-};
-
-const styles = StyleSheet.create({
-container: {
-    flex: 1,
-  },
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#000",
-  },
-  result: {
-    fontSize: 18,
-    color: "#fff",
-    margin: 20,
-    textAlign: "center",
-  },
-});
