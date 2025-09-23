@@ -117,7 +117,10 @@ export default function NewScanScreen() {
       {scanning ? (
         <ScannerView
           onBarcodeScanned={handleBarcodeScanned}
-          onManualEntry={() => setShowManualEntry(true)}
+          onManualEntry={() => {
+            setScanning(false);
+            setShowManualEntry(true);
+          }}
           isValidating={vinValidation.isValidating}
         />
       ) : showManualEntry ? (
@@ -128,6 +131,7 @@ export default function NewScanScreen() {
           onSubmit={handleManualCodeSubmit}
           onBackToScanner={() => {
             setShowManualEntry(false);
+            setScanning(true);
             setManualCode('');
             setScannedData(null);
           }}
@@ -167,7 +171,10 @@ export default function NewScanScreen() {
             />
             <Button 
               title="Manual Entry" 
-              onPress={() => setShowManualEntry(true)}
+              onPress={() => {
+                setShowManualEntry(true);
+                setScannedData(null);
+              }}
               disabled={vinValidation.isValidating}
             />
           </View>
