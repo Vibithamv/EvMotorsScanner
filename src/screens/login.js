@@ -5,7 +5,7 @@ import { View, StyleSheet, Image, TouchableOpacity, Text, Alert, Dimensions  } f
 import { TextInput, Button } from 'react-native-paper';
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
-import AuthService from '../services/AuthService';
+import { useAuth } from '../contexts/AuthContext';
 import { Images, Fonts, Colors, CommonStyles, AssetHelpers } from '../utils/AssetManager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,6 +15,7 @@ export default function LoginScreen({ navigation }) {
   const [secureTextVisible, setSecureTextVisible] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { login } = useAuth();
 
 
 
@@ -29,10 +30,10 @@ export default function LoginScreen({ navigation }) {
     setError('');
 
     try {
-      const result = await AuthService.login(email, password);
+      const result = await login(email, password);
       if (result.success) {
         navigation.replace('Home');
-        console.log('Login successful, token:', result.token);
+        console.log('Login successful');
       } else {
         setError(result.error);
       }

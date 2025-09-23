@@ -8,11 +8,21 @@ import HomeScreen from '../screens/home';
 import NewScanScreen from '../screens/newscan';
 import { Images } from '../utils/AssetManager';
 import { getHeaderOptions } from '../components/HeaderWithLogout';
+import AuthGuard from '../components/AuthGuard';
+import { AuthProvider, useAuth } from '../contexts/AuthContext';
 //import ForgotPasswordScreen from './screens/ForgotPasswordScreen'; // Create this screen too
 
 const Stack = createNativeStackNavigator();
 
-const AppNavigation = () => {
+// Protected route wrapper component
+const ProtectedRoute = ({ children }) => {
+  return <AuthGuard>{children}</AuthGuard>;
+};
+
+// Navigation component that uses auth context
+const AppNavigator = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">
@@ -28,20 +38,39 @@ const AppNavigation = () => {
         />
         <Stack.Screen 
           name="Home" 
-          component={HomeScreen} 
           options={({ navigation }) => getHeaderOptions(navigation, {
             headerBackVisible: false
           })}
-        />
+        >
+          {() => (
+            <ProtectedRoute>
+              <HomeScreen />
+            </ProtectedRoute>
+          )}
+        </Stack.Screen>
         <Stack.Screen 
           name="NewScan" 
-          component={NewScanScreen} 
           options={({ navigation }) => getHeaderOptions(navigation, {
             headerTitle:'New Scan',
           })}
-        />
+        >
+          {() => (
+            <ProtectedRoute>
+              <NewScanScreen />
+            </ProtectedRoute>
+          )}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
+  );
+};
+
+// Main navigation component with auth provider
+const AppNavigation = () => {
+  return (
+    <AuthProvider>
+      <AppNavigator />
+    </AuthProvider>
   );
 };
 
