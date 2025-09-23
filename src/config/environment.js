@@ -6,19 +6,19 @@ export const CURRENT_ENVIRONMENT = 'dev';
 export const ENVIRONMENT_CONFIG = {
   dev: {
     name: 'Development',
-    baseURL: 'http://192.168.1.96:3000',
+    baseURL: 'http://54.82.103.120/api',
     timeout: 10000,
     debug: true,
   },
   stage: {
     name: 'Staging',
-    baseURL: 'https://api-stage.evmotors.com',
+    baseURL: 'http://54.82.103.120/api',
     timeout: 15000,
     debug: true,
   },
   prod: {
     name: 'Production',
-    baseURL: 'https://api.evmotors.com',
+    baseURL: 'http://54.82.103.120/api',
     timeout: 15000,
     debug: false,
   },

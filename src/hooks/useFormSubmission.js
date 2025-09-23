@@ -15,9 +15,9 @@ export const useFormSubmission = (vehicleInfo, selectedLot, selectedKeys, escala
     try {
       const payload = {
         vin: vehicleInfo.vin,
-        timestamp: new Date().toISOString(),
-        lot: selectedLot,
-        keys: selectedKeys
+        timestamp_utc: new Date().toISOString(),
+        assigned_lot_name: selectedLot,
+        number_of_keys: selectedKeys
       };
 
       console.log('Submitting VIN accept payload:', payload);
