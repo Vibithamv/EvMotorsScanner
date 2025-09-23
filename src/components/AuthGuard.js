@@ -17,30 +17,49 @@ const AuthGuard = ({ children }) => {
     }
   }, [isAuthenticated, isLoading, navigation]);
 
-  // Show loading spinner while checking authentication
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#005B9A" />
-      </View>
-    );
-  }
-
-  // If not authenticated, don't render children (will redirect to login)
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  // If authenticated, render the protected component
-  return children;
+  // Always render children to maintain hook order, but overlay loading/blocking UI
+  return (
+    <View style={styles.container}>
+      {children}
+      
+      {/* Show loading overlay while checking authentication */}
+      {isLoading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#005B9A" />
+        </View>
+      )}
+      
+      {/* Show blocking overlay if not authenticated */}
+      {!isLoading && !isAuthenticated && (
+        <View style={styles.blockingOverlay} />
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-  loadingContainer: {
+  container: {
     flex: 1,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000',
+    zIndex: 1000,
+  },
+  blockingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1000,
   },
 });
 
