@@ -14,15 +14,25 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext';
 
 const Stack = createNativeStackNavigator();
 
-// Protected route wrapper component
-const ProtectedRoute = ({ children }) => {
-  return <AuthGuard>{children}</AuthGuard>;
+// Protected route wrapper components
+const ProtectedHomeScreen = () => {
+  return (
+    <AuthGuard>
+      <HomeScreen />
+    </AuthGuard>
+  );
+};
+
+const ProtectedNewScanScreen = () => {
+  return (
+    <AuthGuard>
+      <NewScanScreen />
+    </AuthGuard>
+  );
 };
 
 // Navigation component that uses auth context
 const AppNavigator = () => {
-  const { isAuthenticated, isLoading } = useAuth();
-
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">
@@ -38,28 +48,18 @@ const AppNavigator = () => {
         />
         <Stack.Screen 
           name="Home" 
+          component={ProtectedHomeScreen}
           options={({ navigation }) => getHeaderOptions(navigation, {
             headerBackVisible: false
           })}
-        >
-          {() => (
-            <ProtectedRoute>
-              <HomeScreen />
-            </ProtectedRoute>
-          )}
-        </Stack.Screen>
+        />
         <Stack.Screen 
           name="NewScan" 
+          component={ProtectedNewScanScreen}
           options={({ navigation }) => getHeaderOptions(navigation, {
             headerTitle:'New Scan',
           })}
-        >
-          {() => (
-            <ProtectedRoute>
-              <NewScanScreen />
-            </ProtectedRoute>
-          )}
-        </Stack.Screen>
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
