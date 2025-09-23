@@ -22,7 +22,6 @@ export default function NewScanScreen() {
   const [showVehicleForm, setShowVehicleForm] = useState(false);
   const [selectedLot, setSelectedLot] = useState('');
   const [selectedKeys, setSelectedKeys] = useState(1);
-  const [showLotDropdown, setShowLotDropdown] = useState(false);
 
   // Custom hooks
   const vinValidation = useVinValidation();
@@ -81,7 +80,6 @@ export default function NewScanScreen() {
 
   const handleLotSelection = (lot) => {
     setSelectedLot(lot);
-    setShowLotDropdown(false);
   };
 
   const handleKeysSelection = (keys) => {
@@ -142,10 +140,8 @@ export default function NewScanScreen() {
           availableLots={vinValidation.availableLots}
           selectedLot={selectedLot}
           selectedKeys={selectedKeys}
-          showLotDropdown={showLotDropdown}
           isSubmitting={formSubmission.isSubmitting}
           onLotSelect={handleLotSelection}
-          onToggleDropdown={() => setShowLotDropdown(!showLotDropdown)}
           onKeysSelect={handleKeysSelection}
           onSubmit={handleFormSubmit}
           onStartOver={resetForm}

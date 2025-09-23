@@ -9,10 +9,8 @@ const VehicleForm = ({
   availableLots,
   selectedLot,
   selectedKeys,
-  showLotDropdown,
   isSubmitting,
   onLotSelect,
-  onToggleDropdown,
   onKeysSelect,
   onSubmit,
   onStartOver
@@ -27,9 +25,7 @@ const VehicleForm = ({
         <LotSelector
           availableLots={availableLots}
           selectedLot={selectedLot}
-          showLotDropdown={showLotDropdown}
           onLotSelect={onLotSelect}
-          onToggleDropdown={onToggleDropdown}
         />
 
         <KeysSelector
