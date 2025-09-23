@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, Alert } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { Images, Colors } from '../utils/AssetManager';
-import { useAuth } from '../contexts/AuthContext';
+import AuthService from '../services/AuthService';
 
 /**
  * Reusable header component with logout functionality
@@ -17,8 +17,6 @@ export default function HeaderWithLogout({
   showLogout = true, 
   customStyles = {} 
 }) {
-  const { logout } = useAuth();
-
   const handleLogout = () => {
     Alert.alert(
       'Logout',
@@ -32,7 +30,7 @@ export default function HeaderWithLogout({
           text: 'Logout',
           style: 'destructive',
           onPress: async () => {
-            await logout();
+            await AuthService.logout();
             navigation.replace('Login');
           },
         },
