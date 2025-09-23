@@ -36,6 +36,7 @@ export const FontConfig = {
     medium: 14,
     large: 16,
     xlarge: 18,
+    size_20: 20,
     xxlarge: 24,
     xxxlarge: 32,
   },
@@ -133,10 +134,22 @@ export const CommonStyles = {
     color: Colors.text,
     fontFamily: FontConfig.families.bold,
   },
+  splashHeader1: {
+    fontSize: FontConfig.sizes.size_20,
+    fontWeight: FontConfig.weights.bold,
+    color: Colors.text,
+    fontFamily: FontConfig.families.bold,
+  },
   
   header2: {
     fontSize: FontConfig.sizes.xxxlarge,
     fontWeight: FontConfig.weights.normal,
+    color: Colors.secondary,
+    fontFamily: FontConfig.families.regular,
+  },
+    splashHeader2: {
+    fontSize: FontConfig.sizes.size_20,
+    fontWeight: FontConfig.weights.bold,
     color: Colors.secondary,
     fontFamily: FontConfig.families.bold,
   },
@@ -148,6 +161,13 @@ export const CommonStyles = {
     alignSelf: 'center',
     position: 'absolute',
     top: 56,
+  },
+  evmotorsLogo:{
+    height:73,
+    width:322,
+    // alignSelf: 'center',
+    // position: 'absolute',
+   // top:100
   },
   
   // Footer styles

@@ -3,6 +3,7 @@ import { View, StyleSheet, Image, Text } from 'react-native';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import AuthService from '../services/AuthService';
+import { TextInput, Button } from 'react-native-paper';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Images, Colors, CommonStyles, AssetHelpers } from '../utils/AssetManager';
 
@@ -44,92 +45,89 @@ export default function SplashScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Main Logo */}
-      <Image 
-        source={Images.logoIcon} 
-        style={styles.logo} 
-        resizeMode="contain" 
-      />
-      
-      {/* App Title */}
-      <View style={styles.titleContainer}>
-        <Text style={styles.title1}>Check-In</Text>
-        <Text style={styles.title2}>Hub</Text>
-      </View>
-      
-      {/* Subtitle */}
-      <Text style={styles.subtitle}>EV Motors Scanner</Text>
-      
-      {/* Loading Indicator */}
-      <LoadingSpinner 
-        text="Checking authentication..."
-        style={styles.loadingContainer}
-      />
-      
-      {/* Background Logo */}
-      <Image
+    
+      <Image source={Images.evmotorsLogo} style={styles.evmotorsLogo} resizeMode="contain" />
+
+ <View style={styles.loginHeader}>
+      <Text style={styles.header1}>Check-In</Text>
+      <Text style={styles.header2}> Hub</Text>
+    </View>
+       <Image
         source={Images.backgroundLogo}
-        style={styles.backgroundLogo}
+        style={[ {position:'absolute', bottom:10}]} 
         resizeMode="contain"
       />
-      
-      {/* Footer */}
       <Text style={styles.footer}>© evmotors</Text>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+    container: {
     ...CommonStyles.container,
+  },
+  evmotorsLogo: {
+    ...CommonStyles.evmotorsLogo,
+  },
+  loginHeader:{
+    flexDirection: 'row',  // this makes children sit in a row
+    alignSelf: 'center',
+  },
+  header1:{
+    ...CommonStyles.splashHeader1,
+  },
+  loginText:{
+    fontSize:16,
+    fontStyle:'bold',
+    fontWeight:700,
+    color:'#ffff',
+    alignSelf:'center',
+    position:'absolute',
+    top:174,
+    fontFamily: "InstrumentSans-Bold",
+  },
+  header2:{
+    ...CommonStyles.splashHeader2,
+  },
+  username:{
+    ...CommonStyles.label,
+  },
+   password:{
+    ...CommonStyles.label,
+    marginTop:5,
+  },
+  input: {
+    ...CommonStyles.input,
+  },
+  button: {
+    ...CommonStyles.primaryButton,
+    marginTop: 8,
+  },
+  buttonContent: {
+    ...CommonStyles.primaryButtonText,
+  },
+  forgotContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: 16,
+    marginBottom:16
   },
-  
-  logo: {
-    width: 80,
-    height: 80,
-    marginBottom: 30,
+  row: {
+   flexDirection: 'row',        // Align children horizontally
+    justifyContent: 'center',    // Center them in the parent
+    alignItems: 'center',   
+    gap:5     // Align vertically
   },
-  
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
+  forgotText: {
+    fontSize: 14,
+    color: Colors.secondary,
+    marginTop:20,
+    fontFamily: "InstrumentSans-Regular",
   },
-  
-  title1: {
-    ...CommonStyles.header1,
-    fontSize: 36,
-    marginRight: 5,
+  errorText: {
+    ...CommonStyles.errorText,
   },
-  
-  title2: {
-    ...CommonStyles.header2,
-    fontSize: 36,
-  },
-  
-  subtitle: {
-    fontSize: 16,
-    color: Colors.textSecondary,
-    marginBottom: 60,
-    fontFamily: 'InstrumentSans-Regular',
-  },
-  
-  loadingContainer: {
-    marginBottom: 40,
-  },
-  
-  backgroundLogo: {
-    position: 'absolute',
-    bottom: 60,
-    width: 200,
-    height: 200,
-    opacity: 0.1,
-  },
-  
   footer: {
     ...CommonStyles.footer,
-    bottom: 20,
-  },
+  }
 });

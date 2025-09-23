@@ -30,14 +30,14 @@ const AppNavigation = () => {
           name="Home" 
           component={HomeScreen} 
           options={({ navigation }) => getHeaderOptions(navigation, {
-            headerBackVisible: false,
+            headerBackVisible: false
           })}
         />
         <Stack.Screen 
           name="NewScan" 
           component={NewScanScreen} 
           options={({ navigation }) => getHeaderOptions(navigation, {
-            headerBackTitle: 'New Scan',
+            headerTitle:'New Scan',
           })}
         />
       </Stack.Navigator>

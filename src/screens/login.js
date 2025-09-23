@@ -7,6 +7,7 @@ import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import AuthService from '../services/AuthService';
 import { Images, Fonts, Colors, CommonStyles, AssetHelpers } from '../utils/AssetManager';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -31,6 +32,7 @@ export default function LoginScreen({ navigation }) {
       const result = await AuthService.login(email, password);
       if (result.success) {
         navigation.replace('Home');
+        console.log('Login successful, token:', result.token);
       } else {
         setError(result.error);
       }
@@ -141,8 +143,8 @@ const styles = StyleSheet.create({
   },
   header1:{
     ...CommonStyles.header1,
-    position:'absolute',
-    top:126,
+    // position:'absolute',
+    // top:126,
   },
   loginText:{
     fontSize:16,

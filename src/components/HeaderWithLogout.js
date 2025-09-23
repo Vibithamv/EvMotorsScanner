@@ -48,7 +48,7 @@ export default function HeaderWithLogout({
     <IconButton
       icon="power"
       iconColor={Colors.error}
-      size={24}
+      size={26}
       onPress={handleLogout}
       style={{ marginRight: 8 }}
     />
