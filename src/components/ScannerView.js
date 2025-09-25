@@ -11,6 +11,7 @@ const ScannerView = ({ onBarcodeScanned, onManualEntry, isValidating }) => {
         barcodeScannerSettings={{
           barcodeTypes: ["qr", "ean13", "code128"],
         }}
+        facing="back"
       />
       <View style={styles.overlay}>
         <Button 
