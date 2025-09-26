@@ -2,15 +2,13 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import NetworkService from '../services/NetworkService';
 
-export const useFormSubmission = (vehicleInfo, selectedLot, selectedKeys, escalationHook) => {
+export const useEscalationSubmission = (vehicleInfo, selectedLot, selectedKeys) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFormSubmit = async () => {
-    setIsSubmitting(true);
-    console.log("Form submission initiated with:", { vehicleInfo, selectedLot, selectedKeys });
+    console.log("Escalation submission initiated with:", { vehicleInfo, selectedLot, selectedKeys });
     if (!selectedLot) {
       Alert.alert('Error', 'Please select a lot');
-      setIsSubmitting(false);
       return;
     }
 
@@ -18,18 +16,18 @@ export const useFormSubmission = (vehicleInfo, selectedLot, selectedKeys, escala
     try {
       const payload = {
         vin: vehicleInfo.vin,
-        timestamp_utc: new Date().toISOString(),
-        assigned_lot_name: selectedLot,
-        number_of_keys: selectedKeys
+        timestamp: new Date().toISOString(),
+        assigned_lot: selectedLot,
+        keys: selectedKeys
       };
 
-      console.log('Submitting VIN accept payload:', payload);
+      console.log('Submitting escalation payload:', payload);
       
-      const response = await NetworkService.post('/api/mobile/vin/accept', payload);
+      const response = await NetworkService.post('/api/vin/escalation', payload);
       
       if (response.success) {
          setIsSubmitting(false);
-        Alert.alert('Success', 'Vehicle information submitted successfully!', [
+        Alert.alert('Success', 'Vin escalation submitted successfully!', [
           {
             text: 'OK',
             onPress: () => {

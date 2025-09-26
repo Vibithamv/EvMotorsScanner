@@ -77,6 +77,7 @@ class NetworkService {
    * @returns {Promise} API response
    */
   async get(endpoint, params = {}, config = {}) {
+    console.log(`GET Request to ${endpoint} with params:`, params); 
     try {
       const response = await this.api.get(endpoint, {
         params,

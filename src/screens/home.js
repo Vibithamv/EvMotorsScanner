@@ -21,15 +21,6 @@ navigation.navigate('NewScan')
       >
         New Scan
       </Button>
-        <Button
-        mode="contained"
-       // onPress={onLogin}
-       // loading={loading}
-        style={styles.button}
-        contentStyle={styles.buttonContent}
-      >
-        Scan History
-      </Button>
     </View>
   );
 }

@@ -6,8 +6,8 @@ import KeysSelector from './KeysSelector';
 import { commonStyles } from '../styles/commonStyles';
 import { Colors, CommonStyles} from '../utils/AssetManager';
 
-const VehicleForm = ({
-  vehicleInfo,
+
+const EscalationForm = ({
   availableLots,
   selectedLot,
   selectedKeys,
@@ -17,10 +17,9 @@ const VehicleForm = ({
   onSubmit,
   onStartOver
 }) => {
-
   return (
       <View style={CommonStyles.container}>
-        <Text style={styles.formTitle}>Vin Acceptance</Text>
+        <Text style={styles.formTitle}>Vin Escalation</Text>
         
         {/* <VehicleInfoCard vehicleInfo={vehicleInfo} /> */}
 
@@ -30,22 +29,19 @@ const VehicleForm = ({
           onLotSelect={onLotSelect}
         />
 
-       {!selectedLot && <Text>Select a lot before submit</Text>}
-
         <KeysSelector
           selectedKeys={selectedKeys}
           onKeysSelect={onKeysSelect}
         />
 
         <View style={styles.submitContainer}>
-           <TouchableOpacity onPress={onSubmit} style={styles.button} >
-                  <Text style={styles.buttonContent}>{isSubmitting ? "Submitting..." : "Submit Vehicle Info"}</Text>
+           <TouchableOpacity onPress={onSubmit} style={styles.button} disabled={isSubmitting || !selectedLot}>
+                  <Text style={styles.buttonContent}>{isSubmitting ? "Submitting..." : "Submit"}</Text>
                 </TouchableOpacity>
-         
-           <TouchableOpacity onPress={onStartOver} disabled={isSubmitting} style={[styles.button]}>
-                  <Text style={styles.buttonContent}>Start Over</Text>
-                </TouchableOpacity>
-      
+        
+          <TouchableOpacity onPress={onStartOver} disabled={isSubmitting} style={[styles.button]}>
+                          <Text style={styles.buttonContent}>Start Over</Text>
+                        </TouchableOpacity>
         </View>
       </View>
   );
@@ -79,4 +75,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VehicleForm;
+export default EscalationForm;

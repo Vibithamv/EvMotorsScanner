@@ -10,7 +10,7 @@ const EscalationPrompt = ({
   return (
     <View style={styles.center}>
       <View style={styles.escalationCard}>
-        <Text style={styles.escalationTitle}>Submission Failed</Text>
+        <Text style={styles.escalationTitle}>VIN Escalation</Text>
         <Text style={styles.escalationMessage}>
           The vehicle information could not be submitted successfully. 
           Would you like to register an escalation for manual processing?

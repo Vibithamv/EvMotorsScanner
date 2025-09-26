@@ -1,8 +1,12 @@
 import { StyleSheet } from 'react-native';
+import { Colors} from '../utils/AssetManager';
+
 
 export const commonStyles = StyleSheet.create({
   container: {
     flex: 1,
+     backgroundColor: Colors.background,
+        justifyContent: 'center',
   },
   center: {
     flex: 1,

@@ -14,12 +14,13 @@ export const useVinValidation = () => {
       
       if (response.success) {
         console.log('VIN validation response:', response.data);
+       // console.log('Lots array stored:', response.data.data.lots);
         
         // Extract and store lots array if present
-        if (response.data && response.data.lots && Array.isArray(response.data.lots)) {
-          await NetworkService.storeData('lots', response.data.lots);
-          setAvailableLots(response.data.lots);
-          console.log('Lots array stored:', response.data.lots);
+        if (response.data && response.data.data.lots && Array.isArray(response.data.data.lots)) {
+          await NetworkService.storeData('lots', response.data.data.lots);
+          setAvailableLots(response.data.data.lots);
+          console.log('Lots array stored:', response.data.data.lots);
         }
         
         // Set vehicle information
@@ -32,7 +33,13 @@ export const useVinValidation = () => {
         return { success: true, data: response.data };
       } else {
         console.error('VIN validation failed:', response.error);
-        Alert.alert('Error', 'Code validation failed. Please try again.');
+          if (response.error && response.error.data.lots && Array.isArray(response.error.data.lots)) {
+         console.log('Lots array stored:', response.error.data.lots);
+        await NetworkService.storeData('lots', response.error.data.lots);
+          setAvailableLots(response.error.data.lots);
+          }
+          setVehicleInfo({vin:code});
+        Alert.alert('Error', 'Code validation failed');
         return { success: false, error: response.error };
       }
     } catch (error) {

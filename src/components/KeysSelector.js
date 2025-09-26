@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Colors } from '../utils/AssetManager';
 
 const KeysSelector = ({ selectedKeys, onKeysSelect }) => {
   return (
@@ -40,10 +41,12 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#fff",
-    fontWeight: 'bold',
     marginBottom: 15,
+    marginTop:10,
+    alignSelf:'center',
+    fontFamily: "InstrumentSans-Bold",
   },
   keysContainer: {
     flexDirection: 'row',
@@ -59,8 +62,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   keyOptionSelected: {
-    borderColor: "#005B9A",
-    backgroundColor: "#005B9A",
+    borderColor: Colors.secondary,
+    backgroundColor: Colors.secondary,
   },
   keyOptionText: {
     color: "#fff",
