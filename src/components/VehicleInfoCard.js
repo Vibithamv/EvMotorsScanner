@@ -1,5 +1,4 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from "react-native";
 
 const VehicleInfoCard = ({ vehicleInfo }) => {
   if (!vehicleInfo) return null;
@@ -45,25 +44,25 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 20,
     color: "#fff",
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 15,
     textAlign: "center",
   },
   infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 10,
     paddingVertical: 5,
   },
   infoLabel: {
     fontSize: 16,
     color: "#ccc",
-    fontWeight: '600',
+    fontWeight: "600",
   },
   infoValue: {
     fontSize: 16,
     color: "#fff",
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });
 

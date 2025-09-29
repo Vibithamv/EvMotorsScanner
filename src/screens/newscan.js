@@ -1,47 +1,44 @@
 // screens/NewScanScreen.tsx
 
-import React, { useState, useEffect } from 'react';
-import { Text, View, Button, Alert } from 'react-native';
 import { useCameraPermissions } from "expo-camera";
-import { useVinValidation } from '../hooks/useVinValidation';
-import { useEscalation } from '../hooks/useEscalation';
-import { useFormSubmission } from '../hooks/useFormSubmission';
-import { useEscalationSubmission } from '../hooks/useEscalationSubmission';
-import ScannerView from '../components/ScannerView';
-import ManualEntryForm from '../components/ManualEntryForm';
-import VehicleForm from '../components/VehicleForm';
-import EscalationPrompt from '../components/EscalationPrompt';
-import { commonStyles } from '../styles/commonStyles';
-import EscalationForm from '../components/EscalationForm';
-
+import { useEffect, useState } from "react";
+import { Alert, Button, Text, View } from "react-native";
+import EscalationForm from "../components/EscalationForm";
+import ScannerView from "../components/ScannerView";
+import VehicleForm from "../components/VehicleForm";
+import { useEscalation } from "../hooks/useEscalation";
+import { useEscalationSubmission } from "../hooks/useEscalationSubmission";
+import { useFormSubmission } from "../hooks/useFormSubmission";
+import { useVinValidation } from "../hooks/useVinValidation";
+import { commonStyles } from "../styles/commonStyles";
 
 export default function NewScanScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scannedData, setScannedData] = useState(null);
   const [scanning, setScanning] = useState(true);
-  const [manualCode, setManualCode] = useState('');
+  const [manualCode, setManualCode] = useState("");
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [showVehicleForm, setShowVehicleForm] = useState(false);
   const [showEscalationForm, setShowEscalationForm] = useState(false);
-  const [selectedLot, setSelectedLot] = useState('');
+  const [selectedLot, setSelectedLot] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(1);
 
   // Custom hooks
   const vinValidation = useVinValidation();
   const escalation = useEscalation();
   const formSubmission = useFormSubmission(
-    vinValidation.vehicleInfo, 
-    selectedLot, 
-    selectedKeys, 
+    vinValidation.vehicleInfo,
+    selectedLot,
+    selectedKeys,
     escalation
   );
   const formEscalation = useEscalationSubmission(
-    vinValidation.vehicleInfo, 
-    selectedLot, 
+    vinValidation.vehicleInfo,
+    selectedLot,
     selectedKeys
   );
 
-   useEffect(() => {
+  useEffect(() => {
     if (!permission) {
       requestPermission();
     }
@@ -68,39 +65,38 @@ export default function NewScanScreen() {
   };
 
   const handleManualCodeSubmit = (manualCode) => {
-    console.log("Manual code submitted:", manualCode);  
+    console.log("Manual code submitted:", manualCode);
     if (manualCode.trim()) {
       handleCodeValidation(manualCode.trim());
     } else {
-      Alert.alert('Error', 'Please enter a valid code');
+      Alert.alert("Error", "Please enter a valid code");
     }
   };
 
   const handleCodeValidation = async (code) => {
     const result = await vinValidation.validateCode(code);
-    // if (result.success) {
-    //   setShowVehicleForm(true);
-    //   setScanning(false);
-    //   setShowManualEntry(false);
-    //   setShowEscalationForm(false);
-    // } else {
-    //    setShowEscalationForm(true);
-    //    setShowVehicleForm(false);
-    //   setScanning(false);
-    //   setShowManualEntry(false);
-    //   setScannedData(`Code: ${code}\nStatus: Invalid\nError: ${result.error}`);
-    // }
-     if (result.success) {
+    if (result.success) {
       setShowVehicleForm(true);
       setScanning(false);
       setShowManualEntry(false);
       setShowEscalationForm(false);
+    } else if (result.status !== 500) {
+      if (
+        result.error &&
+        result.error.data &&
+        result.error.data.lots &&
+        Array.isArray(result.error.data.lots)
+      ) {
+        setShowEscalationForm(true);
+        setShowVehicleForm(false);
+        setScanning(false);
+        setShowManualEntry(false);
+      } else {
+        Alert.alert("Error", "No lots available for escalation.");
+        setScanning(true);
+      }
     } else {
-       setShowEscalationForm(true);
-       setShowVehicleForm(false);
-      setScanning(false);
-      setShowManualEntry(false);
-      //setScannedData(`Code: ${code}\nStatus: Invalid\nError: ${result.error}`);
+      setScanning(true);
     }
   };
 
@@ -113,7 +109,12 @@ export default function NewScanScreen() {
   };
 
   const handleFormSubmit = async () => {
-    console.log("Submitting form with lot:", selectedLot, "and keys:", selectedKeys);
+    console.log(
+      "Submitting form with lot:",
+      selectedLot,
+      "and keys:",
+      selectedKeys
+    );
     const result = await formSubmission.handleFormSubmit();
     if (result?.success) {
       resetForm();
@@ -129,7 +130,7 @@ export default function NewScanScreen() {
 
   const resetForm = () => {
     vinValidation.setVehicleInfo(null);
-    setSelectedLot('');
+    setSelectedLot("");
     setSelectedKeys(1);
     setShowVehicleForm(false);
     setScannedData(null);
@@ -144,30 +145,10 @@ export default function NewScanScreen() {
           onBarcodeScanned={handleBarcodeScanned}
           onManualEntry={() => {
             console.log("Manual Entry Clicked");
-            handleCodeValidation('SN35X1A7B4C6D2E3G');
-           // setScanning(false);
-           // setManualCode('SN35X1A7B4C6D2E3G');
-          //  handleManualCodeSubmit('SN35X1A7B4C6D2E3G.');
-           // setShowManualEntry(true);
+            handleCodeValidation("SN35X1A7B4C6D2E3G");
           }}
-         // isValidating={vinValidation.isValidating}
         />
-      ) 
-      // : showManualEntry ? (
-      //   <ManualEntryForm
-      //     manualCode={manualCode}
-      //     isValidating={vinValidation.isValidating}
-      //     onCodeChange={setManualCode}
-      //     onSubmit={handleManualCodeSubmit}
-      //     onBackToScanner={() => {
-      //       setShowManualEntry(false);
-      //       setScanning(true);
-      //       setManualCode('');
-      //       setScannedData(null);
-      //     }}
-      //   />
-      // ) 
-      : showVehicleForm ? (
+      ) : showVehicleForm ? (
         <VehicleForm
           vehicleInfo={vinValidation.vehicleInfo}
           availableLots={vinValidation.availableLots}
@@ -181,7 +162,7 @@ export default function NewScanScreen() {
         />
       ) : showEscalationForm ? (
         <EscalationForm
-        availableLots={vinValidation.availableLots}
+          availableLots={vinValidation.availableLots}
           selectedLot={selectedLot}
           selectedKeys={selectedKeys}
           isSubmitting={formEscalation.isSubmitting}

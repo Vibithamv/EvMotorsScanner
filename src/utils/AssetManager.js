@@ -6,30 +6,31 @@
 // ===== IMAGES =====
 export const Images = {
   // Logo assets
-  logoIcon: require('../../assets/logo_icon.png'),
-  evmotorsLogo: require('../../assets/evmotors_logo.png'),
-  backgroundLogo: require('../../assets/background_logo.png'),
-  
+  logoIcon: require("../../assets/logo_icon.png"),
+  evmotorsLogo: require("../../assets/evmotors_logo.png"),
+  splashLogo: require("../../assets/splash_logo.png"),
+  backgroundLogo: require("../../assets/background_logo.png"),
+
   // UI assets
-  eye: require('../../assets/eye.png'),
-  favicon: require('../../assets/favicon.png'),
+  eye: require("../../assets/eye.png"),
+  favicon: require("../../assets/favicon.png"),
 };
 
 // ===== FONTS =====
 export const Fonts = {
   // Instrument Sans font family
-  instrumentSansRegular: require('../../assets/fonts/InstrumentSans-Regular.ttf'),
-  instrumentSansBold: require('../../assets/fonts/InstrumentSans-Bold.ttf'),
+  instrumentSansRegular: require("../../assets/fonts/InstrumentSans-Regular.ttf"),
+  instrumentSansBold: require("../../assets/fonts/InstrumentSans-Bold.ttf"),
 };
 
 // ===== FONT CONFIGURATIONS =====
 export const FontConfig = {
   // Font family names for use in styles
   families: {
-    regular: 'InstrumentSans-Regular',
-    bold: 'InstrumentSans-Bold',
+    regular: "InstrumentSans-Regular",
+    bold: "InstrumentSans-Bold",
   },
-  
+
   // Font sizes
   sizes: {
     small: 12,
@@ -40,38 +41,39 @@ export const FontConfig = {
     xxlarge: 24,
     xxxlarge: 32,
   },
-  
+
   // Font weights
   weights: {
-    normal: '400',
-    bold: '700',
+    normal: "400",
+    bold: "700",
   },
 };
 
 // ===== THEME COLORS =====
 export const Colors = {
   // Primary brand colors
-  primary: '#005B9A',
-  secondary: '#45BC50',
-  
+  primary: "#005B9A",
+  secondary: "#45BC50",
+
   // Background colors
-  background: '#0E1325',
-  cardBackground: '#162142',
-  
+  background: "#0E1325",
+  cardBackground: "#162142",
+
   // Text colors
-  text: '#FFFFFF',
-  textSecondary: '#5F6B91',
-  textMuted: '#666666',
-  
+  text: "#FFFFFF",
+  textSecondary: "#5F6B91",
+  textMuted: "#666666",
+
   // Status colors
-  error: '#FF6B6B',
-  success: '#45BC50',
-  warning: '#FFA500',
-  info: '#005B9A',
-  
+  error: "#FF6B6B",
+  success: "#45BC50",
+  warning: "#FFA500",
+  info: "#005B9A",
+  settingsError: "#0000",
+
   // UI colors
-  border: '#5F6B91',
-  placeholder: '#5F6B91',
+  border: "#5F6B91",
+  placeholder: "#5F6B91",
 };
 
 // ===== COMMON STYLES =====
@@ -82,26 +84,26 @@ export const CommonStyles = {
     paddingLeft: 24,
     paddingRight: 24,
     backgroundColor: Colors.background,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
-  
+
   // Button styles
   primaryButton: {
     height: 44,
     borderRadius: 4,
     backgroundColor: Colors.secondary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
-  
+
   primaryButtonText: {
-    color: '#000000',
+    color: "#000000",
     fontSize: FontConfig.sizes.medium,
     fontWeight: FontConfig.weights.bold,
-    textAlign: 'center',
+    textAlign: "center",
     fontFamily: FontConfig.families.bold,
   },
-  
+
   // Input styles
   input: {
     height: 44,
@@ -109,7 +111,7 @@ export const CommonStyles = {
     marginBottom: 10,
     backgroundColor: Colors.cardBackground,
   },
-  
+
   // Text styles
   label: {
     fontSize: FontConfig.sizes.medium,
@@ -117,16 +119,16 @@ export const CommonStyles = {
     marginBottom: 5,
     fontFamily: FontConfig.families.regular,
   },
-  
+
   errorText: {
     fontSize: FontConfig.sizes.medium,
     color: Colors.error,
     marginTop: 8,
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
     fontFamily: FontConfig.families.regular,
   },
-  
+
   // Header styles
   header1: {
     fontSize: FontConfig.sizes.xxxlarge,
@@ -140,43 +142,44 @@ export const CommonStyles = {
     color: Colors.text,
     fontFamily: FontConfig.families.bold,
   },
-  
+
   header2: {
     fontSize: FontConfig.sizes.xxxlarge,
     fontWeight: FontConfig.weights.normal,
     color: Colors.secondary,
     fontFamily: FontConfig.families.regular,
   },
-    splashHeader2: {
+  splashHeader2: {
     fontSize: FontConfig.sizes.size_20,
     fontWeight: FontConfig.weights.bold,
     color: Colors.secondary,
     fontFamily: FontConfig.families.bold,
   },
-  
+
   // Logo styles
   logo: {
     width: 48,
     height: 48,
-    alignSelf: 'center',
-    position: 'absolute',
+    alignSelf: "center",
+    position: "absolute",
     top: 56,
   },
-  evmotorsLogo:{
-    height:73,
-    width:322,
-    // alignSelf: 'center',
-    // position: 'absolute',
-   // top:100
+  evmotorsLogo: {
+    height: 73,
+    width: 322,
   },
-  
+  splashLogo: {
+    width: 284,
+    height: 76,
+  },
+
   // Footer styles
   footer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
     color: Colors.textMuted,
     fontSize: FontConfig.sizes.small,
-    alignSelf: 'center',
+    alignSelf: "center",
     fontFamily: FontConfig.families.regular,
   },
 };
@@ -191,7 +194,7 @@ export const AssetHelpers = {
     [FontConfig.families.regular]: Fonts.instrumentSansRegular,
     [FontConfig.families.bold]: Fonts.instrumentSansBold,
   }),
-  
+
   /**
    * Get image source by name
    * @param {string} imageName - Name of the image from Images object
@@ -204,7 +207,7 @@ export const AssetHelpers = {
     }
     return Images[imageName];
   },
-  
+
   /**
    * Get color by name
    * @param {string} colorName - Name of the color from Colors object
@@ -217,7 +220,7 @@ export const AssetHelpers = {
     }
     return Colors[colorName];
   },
-  
+
   /**
    * Get font size by name
    * @param {string} sizeName - Name of the font size from FontConfig.sizes

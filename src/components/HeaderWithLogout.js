@@ -1,8 +1,7 @@
-import React from 'react';
-import { Image, Alert } from 'react-native';
-import { IconButton } from 'react-native-paper';
-import { Images, Colors } from '../utils/AssetManager';
-import AuthService from '../services/AuthService';
+import { Alert, Image } from "react-native";
+import { IconButton } from "react-native-paper";
+import AuthService from "../services/AuthService";
+import { Colors, Images } from "../utils/AssetManager";
 
 /**
  * Reusable header component with logout functionality
@@ -11,43 +10,62 @@ import AuthService from '../services/AuthService';
  * @param {boolean} showLogout - Whether to show logout button (defaults to true)
  * @param {Object} customStyles - Custom styles for the header
  */
-export default function HeaderWithLogout({ 
-  navigation, 
-  title = null, 
-  showLogout = true, 
-  customStyles = {} 
+export default function HeaderWithLogout({
+  navigation,
+  title = null,
+  showLogout = true,
+  headerSettings = true,
+  customStyles = {},
 }) {
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: async () => {
+          await AuthService.logout();
+          navigation.replace("Login");
         },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            await AuthService.logout();
-            navigation.replace('Login');
-          },
-        },
-      ]
-    );
+      },
+    ]);
+  };
+
+  const handleSettings = () => {
+    navigation.navigate("Settings");
   };
 
   const headerTitle = title ? (
     title
   ) : (
-    <Image 
-      source={Images.evmotorsLogo} 
-      style={{ width: 180, height: 60, resizeMode: 'contain' }}
+    <Image
+      source={Images.evmotorsLogo}
+      style={{ width: 180, height: 60, resizeMode: "contain" }}
     />
   );
 
-  const headerRight = showLogout ? (
+  // const headerRight = showLogout ? (
+  //   <IconButton
+  //     icon="power"
+  //     iconColor={Colors.error}
+  //     size={26}
+  //     onPress={handleLogout}
+  //     style={{ marginRight: 8 }}
+  //   />
+  // ) : null;
+
+  const headerRight = headerSettings ? (
+    <IconButton
+      icon="cog"
+      iconColor={Colors.settingsError}
+      size={26}
+      onPress={handleSettings}
+      style={{ marginRight: 8 }}
+    />
+  ) : showLogout ? (
     <IconButton
       icon="power"
       iconColor={Colors.error}
@@ -73,15 +91,22 @@ export default function HeaderWithLogout({
 export const getHeaderOptions = (navigation, options = {}) => {
   const {
     title = null,
-    showLogout = true,
+    showLogout = false,
     headerBackVisible = true,
-    headerBackTitle = 'Back',
+    headerSettings = false,
+    headerBackTitle = "Back",
     ...customStyles
   } = options;
 
   return {
     headerBackVisible,
     headerBackTitle,
-    ...HeaderWithLogout({ navigation, title, showLogout, customStyles }),
+    ...HeaderWithLogout({
+      navigation,
+      title,
+      showLogout,
+      headerSettings,
+      customStyles,
+    }),
   };
 };

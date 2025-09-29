@@ -1,0 +1,334 @@
+// screens/LoginScreen.tsx
+
+import AppLoading from "expo-app-loading";
+import * as Font from "expo-font";
+import { useState } from "react";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { TextInput } from "react-native-paper";
+import ConfirmCodePopup from "../components/confirmCodePopup";
+import { userRegister } from "../hooks/userRegister";
+import AuthService from "../services/AuthService";
+import {
+  AssetHelpers,
+  Colors,
+  CommonStyles,
+  Images,
+} from "../utils/AssetManager";
+
+export default function RegisterScreen({ navigation }) {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phoneNo, setPhoneNumber] = useState("");
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [secureTextVisible, setSecureTextVisible] = useState(true);
+  const [secureConfirmTextVisible, setSecureConfirmTextVisible] =
+    useState(true);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const userRegisterVal = userRegister(firstName, lastName, phoneNo, email);
+
+  const onConfirm = async (confirmationCode) => {
+    setPopupVisible(false);
+    try {
+      const result = await AuthService.confirmRegister(email, confirmationCode);
+      if (result.success) {
+        const registerResult = await userRegisterVal.userRegisterApi();
+        if (registerResult.success) {
+          Alert.alert(
+            "Success",
+            "Registration successfully confirmed. Please log in."
+          );
+          navigation.replace("Login");
+        } else {
+          setError(registerResult.error);
+        }
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Registration confirmation error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const onRegister = async () => {
+    if (!firstName) return setError("Please enter first name");
+    if (!lastName) return setError("Please enter last name");
+    if (!email) return setError("Please enter email");
+    if (!validateEmail(email)) return setError("Please enter a valid email");
+    if (!password) return setError("Please enter password");
+    if (!confirmPassword) return setError("Please enter confirm password");
+    if (password !== confirmPassword) return setError("Passwords do not match");
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const result = await AuthService.register(
+        email,
+        password,
+        firstName,
+        lastName
+      );
+      if (result.success) {
+        setPopupVisible(true);
+      } else {
+        // if (result.error === "User already exists") {
+        //   setPopupVisible(true);
+        // } else {
+        //   setError(result.error);
+        // }
+        setError(result.error)
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Login error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const [fontsLoaded] = Font.useFonts(AssetHelpers.getFontConfig());
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  const onLogin = () => {
+    navigation.replace("Login");
+  };
+
+  return (
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={styles.container}>
+        <Image
+          source={Images.logoIcon}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+
+        <View style={styles.loginHeader}>
+          <Text style={styles.header1}>Check-In</Text>
+          <Text style={styles.header2}> Hub</Text>
+        </View>
+        <Text style={styles.loginText}> User Register</Text>
+        <Text style={styles.username}>First name</Text>
+        <TextInput
+          // label="Username"
+          value={firstName}
+          onChangeText={setFirstName}
+          keyboardType="text"
+          autoCapitalize="none"
+          style={styles.input}
+          textColor={Colors.text}
+          theme={{
+            colors: { primary: Colors.primary, accent: Colors.primary },
+          }}
+        />
+
+        <Text style={styles.username}>Last name</Text>
+        <TextInput
+          // label="Username"
+          value={lastName}
+          onChangeText={setLastName}
+          keyboardType="text"
+          autoCapitalize="none"
+          style={styles.input}
+          textColor={Colors.text}
+          theme={{
+            colors: { primary: Colors.primary, accent: Colors.primary },
+          }}
+        />
+        <Text style={styles.username}>Phone Number</Text>
+        <TextInput
+          value={phoneNo}
+          onChangeText={setPhoneNumber}
+          keyboardType="number-pad"
+          autoCapitalize="none"
+          style={styles.input}
+          textColor={Colors.text}
+          theme={{
+            colors: { primary: Colors.primary, accent: Colors.primary },
+          }}
+        />
+        <Text style={styles.username}>Username</Text>
+        <TextInput
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          style={styles.input}
+          textColor={Colors.text}
+          theme={{
+            colors: { primary: Colors.primary, accent: Colors.primary },
+          }}
+        />
+
+        <Text style={styles.password}>Password</Text>
+
+        <TextInput
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={secureTextVisible}
+          style={styles.input}
+          textColor={Colors.text}
+          theme={{
+            colors: { primary: Colors.primary, accent: Colors.primary },
+          }}
+          right={
+            <TextInput.Icon
+              icon={secureTextVisible ? "eye-off" : "eye"}
+              color={Colors.textSecondary}
+              onPress={() => setSecureTextVisible(!secureTextVisible)}
+            />
+          }
+        />
+
+        <Text style={styles.password}>Confirm Password</Text>
+
+        <TextInput
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry={secureConfirmTextVisible}
+          style={styles.input}
+          textColor={Colors.text}
+          theme={{
+            colors: { primary: Colors.primary, accent: Colors.primary },
+          }}
+          right={
+            <TextInput.Icon
+              icon={secureConfirmTextVisible ? "eye-off" : "eye"}
+              color={Colors.textSecondary}
+              onPress={() =>
+                setSecureConfirmTextVisible(!secureConfirmTextVisible)
+              }
+            />
+          }
+        />
+
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+        <TouchableOpacity
+          onPress={onRegister}
+          style={styles.button}
+          disabled={loading}
+        >
+          <Text style={styles.buttonContent}>
+            {loading ? "Loading..." : "Register"}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={onLogin} style={styles.forgotContainer}>
+          <Text style={styles.forgotText}>
+            Already have an account? Login here
+          </Text>
+        </TouchableOpacity>
+
+        <Text style={styles.footer}>© evmotors</Text>
+        {popupVisible ? (
+          <ConfirmCodePopup
+            visible={popupVisible}
+            onDismiss={() => setPopupVisible(false)}
+            onConfirm={onConfirm}
+          />
+        ) : null}
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    ...CommonStyles.container,
+  },
+  logo: {
+    width: 48,
+    height: 48,
+    alignSelf: "center",
+  },
+  loginHeader: {
+    flexDirection: "row", // this makes children sit in a row
+    alignSelf: "center", // optional, adds space between
+    padding: 5,
+    //position:'absolute',
+    //top:126
+  },
+  header1: {
+    ...CommonStyles.header1,
+    // position:'absolute',
+    // top:126,
+  },
+  loginText: {
+    fontSize: 16,
+    fontStyle: "bold",
+    fontWeight: 700,
+    color: "#ffff",
+    alignSelf: "center",
+    // position:'absolute',
+    //top:174,
+    fontFamily: "InstrumentSans-Bold",
+  },
+  header2: {
+    ...CommonStyles.header2,
+  },
+  username: {
+    ...CommonStyles.label,
+  },
+  password: {
+    ...CommonStyles.label,
+    marginTop: 5,
+  },
+  input: {
+    ...CommonStyles.input,
+  },
+  button: {
+    ...CommonStyles.primaryButton,
+    marginTop: 8,
+  },
+  buttonContent: {
+    ...CommonStyles.primaryButtonText,
+  },
+  forgotContainer: {
+    alignItems: "center",
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  row: {
+    flexDirection: "row", // Align children horizontally
+    justifyContent: "center", // Center them in the parent
+    alignItems: "center",
+    gap: 5, // Align vertically
+  },
+  forgotText: {
+    fontSize: 14,
+    color: Colors.secondary,
+    marginTop: 10,
+    fontFamily: "InstrumentSans-Regular",
+  },
+  errorText: {
+    ...CommonStyles.errorText,
+  },
+  footer: {
+    ...CommonStyles.footer,
+  },
+});

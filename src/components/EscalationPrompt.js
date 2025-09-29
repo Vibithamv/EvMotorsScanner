@@ -1,45 +1,48 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { Button, StyleSheet, Text, View } from "react-native";
 
-const EscalationPrompt = ({ 
-  escalationPayload, 
-  isEscalating, 
-  onEscalation, 
-  onCancel 
+const EscalationPrompt = ({
+  escalationPayload,
+  isEscalating,
+  onEscalation,
+  onCancel,
 }) => {
   return (
     <View style={styles.center}>
       <View style={styles.escalationCard}>
         <Text style={styles.escalationTitle}>VIN Escalation</Text>
         <Text style={styles.escalationMessage}>
-          The vehicle information could not be submitted successfully. 
-          Would you like to register an escalation for manual processing?
+          The vehicle information could not be submitted successfully. Would you
+          like to register an escalation for manual processing?
         </Text>
-        
+
         <View style={styles.escalationDetails}>
           <Text style={styles.escalationDetailLabel}>VIN:</Text>
-          <Text style={styles.escalationDetailValue}>{escalationPayload?.vin}</Text>
+          <Text style={styles.escalationDetailValue}>
+            {escalationPayload?.vin}
+          </Text>
         </View>
         <View style={styles.escalationDetails}>
           <Text style={styles.escalationDetailLabel}>Lot:</Text>
-          <Text style={styles.escalationDetailValue}>{escalationPayload?.lot}</Text>
+          <Text style={styles.escalationDetailValue}>
+            {escalationPayload?.lot}
+          </Text>
         </View>
         <View style={styles.escalationDetails}>
           <Text style={styles.escalationDetailLabel}>Keys:</Text>
-          <Text style={styles.escalationDetailValue}>{escalationPayload?.keys}</Text>
+          <Text style={styles.escalationDetailValue}>
+            {escalationPayload?.keys}
+          </Text>
         </View>
-        
+
         <View style={styles.escalationButtons}>
           <Button
-            title={isEscalating ? "Registering Escalation..." : "Register Escalation"}
+            title={
+              isEscalating ? "Registering Escalation..." : "Register Escalation"
+            }
             onPress={onEscalation}
             disabled={isEscalating}
           />
-          <Button
-            title="Cancel"
-            onPress={onCancel}
-            disabled={isEscalating}
-          />
+          <Button title="Cancel" onPress={onCancel} disabled={isEscalating} />
         </View>
       </View>
     </View>
@@ -66,7 +69,7 @@ const styles = StyleSheet.create({
   escalationTitle: {
     fontSize: 24,
     color: "#ff6b6b",
-    fontWeight: 'bold',
+    fontWeight: "bold",
     textAlign: "center",
     marginBottom: 15,
   },
@@ -78,20 +81,20 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   escalationDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 10,
     paddingVertical: 5,
   },
   escalationDetailLabel: {
     fontSize: 16,
     color: "#ccc",
-    fontWeight: '600',
+    fontWeight: "600",
   },
   escalationDetailValue: {
     fontSize: 16,
     color: "#fff",
-    fontWeight: '500',
+    fontWeight: "500",
   },
   escalationButtons: {
     marginTop: 25,

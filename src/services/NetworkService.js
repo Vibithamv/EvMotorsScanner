@@ -1,19 +1,19 @@
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CURRENT_ENVIRONMENT, ENVIRONMENT_CONFIG } from '../config/environment';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { CURRENT_ENVIRONMENT, ENVIRONMENT_CONFIG } from "../config/environment";
 
 class NetworkService {
   constructor() {
     this.environment = CURRENT_ENVIRONMENT; // Use environment from config
     this.baseURL = ENVIRONMENT_CONFIG[this.environment].baseURL;
     this.timeout = ENVIRONMENT_CONFIG[this.environment].timeout;
-    
+
     // Create axios instance
     this.api = axios.create({
       baseURL: this.baseURL,
       timeout: this.timeout,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -21,12 +21,12 @@ class NetworkService {
     this.api.interceptors.request.use(
       async (config) => {
         try {
-          const token = await AsyncStorage.getItem('cognitoToken');
+          const token = await AsyncStorage.getItem("cognitoToken");
           if (token) {
             config.headers.Authorization = `Bearer ${token}`;
           }
         } catch (error) {
-          console.error('Error getting auth token:', error);
+          console.error("Error getting auth token:", error);
         }
         return config;
       },
@@ -39,7 +39,7 @@ class NetworkService {
     this.api.interceptors.response.use(
       (response) => response,
       (error) => {
-        console.error('API Error:', error.response?.data || error.message);
+        console.error("API Error:", error.response?.data || error.message);
         return Promise.reject(error);
       }
     );
@@ -77,7 +77,7 @@ class NetworkService {
    * @returns {Promise} API response
    */
   async get(endpoint, params = {}, config = {}) {
-    console.log(`GET Request to ${endpoint} with params:`, params); 
+    console.log(`GET Request to ${endpoint} with params:`, params);
     try {
       const response = await this.api.get(endpoint, {
         params,

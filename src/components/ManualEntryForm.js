@@ -1,12 +1,11 @@
-import React from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 
 const ManualEntryForm = ({
   manualCode,
   isValidating,
   onCodeChange,
   onSubmit,
-  onBackToScanner
+  onBackToScanner,
 }) => {
   return (
     <View style={styles.center}>
@@ -21,13 +20,13 @@ const ManualEntryForm = ({
         autoCorrect={false}
       />
       <View style={styles.buttonContainer}>
-        <Button 
-          title="Validate Code" 
+        <Button
+          title="Validate Code"
           onPress={onSubmit}
           disabled={isValidating || !manualCode.trim()}
         />
-        <Button 
-          title="Back to Scanner" 
+        <Button
+          title="Back to Scanner"
           onPress={onBackToScanner}
           disabled={isValidating}
         />
@@ -50,31 +49,31 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginBottom: 30,
     textAlign: "center",
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   input: {
-    width: '100%',
+    width: "100%",
     height: 50,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 20,
-    backgroundColor: '#fff',
-    color: '#333',
+    backgroundColor: "#fff",
+    color: "#333",
     fontSize: 16,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
     marginTop: 20,
   },
   loadingText: {
     color: "#fff",
     fontSize: 16,
     marginTop: 20,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
 });
 

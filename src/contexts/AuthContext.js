@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import AuthService from '../services/AuthService';
+import { createContext, useContext, useEffect, useState } from "react";
+import AuthService from "../services/AuthService";
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       const authenticated = await AuthService.isAuthenticated();
       setIsAuthenticated(authenticated);
-      
+
       if (authenticated) {
         const userData = await AuthService.getCurrentUser();
         setUser(userData);
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
       }
     } catch (error) {
-      console.error('Error checking auth status:', error);
+      console.error("Error checking auth status:", error);
       setIsAuthenticated(false);
       setUser(null);
     } finally {
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
         return { success: false, error: result.error };
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       return { success: false, error: error.message };
     }
   };
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       setUser(null);
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
@@ -75,12 +75,8 @@ export const AuthProvider = ({ children }) => {
     user,
     login,
     logout,
-    checkAuthStatus
+    checkAuthStatus,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

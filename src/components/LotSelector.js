@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
+import { useState } from "react";
+import {
+  StyleSheet,
+  View
+} from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 
-
-const LotSelector = ({ 
-  availableLots, 
-  selectedLot, 
-  onLotSelect
-}) => {
-    const [open, setOpen] = useState(false);
+const LotSelector = ({ availableLots, selectedLot, onLotSelect }) => {
+  const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [items, setItems] = useState(availableLots.map(lot => ({ label: lot, value: lot })));
+  const [items, setItems] = useState(
+    availableLots.map((lot) => ({ label: lot, value: lot }))
+  );
 
   return (
     <View style={styles.container}>
@@ -24,7 +24,7 @@ const LotSelector = ({
         placeholder="Select a Lot"
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}
-        textStyle={{ color: '#000', fontSize: 16, fontWeight:700}}
+        textStyle={{ color: "#000", fontSize: 16, fontWeight: 700 }}
         onChangeValue={(val) => {
           selectedLot === val;
           onLotSelect(val);
@@ -32,20 +32,18 @@ const LotSelector = ({
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-
+    justifyContent: "center",
   },
   dropdown: {
-    borderColor: '#ccc',
+    borderColor: "#ccc",
   },
   dropdownContainer: {
-    borderColor: '#ccc',
+    borderColor: "#ccc",
   },
 });
-
 
 export default LotSelector;

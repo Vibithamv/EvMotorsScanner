@@ -1,18 +1,17 @@
 // screens/HomeScreen.tsx
 
-import { View, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
-import { Colors, CommonStyles } from '../utils/AssetManager';
+import { StyleSheet, View } from "react-native";
+import { Button } from "react-native-paper";
+import { Colors } from "../utils/AssetManager";
 
-export default function HomeScreen({navigation}) {
-
-      const newScan = () => {
-navigation.navigate('NewScan')
-      };
+export default function HomeScreen({ navigation }) {
+  const newScan = () => {
+    navigation.navigate("NewScan");
+  };
 
   return (
     <View style={styles.container}>
-       <Button
+      <Button
         mode="contained"
         onPress={newScan}
         //loading={loading}
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     backgroundColor: Colors.background,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   button: {
     marginTop: 8,

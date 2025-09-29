@@ -1,11 +1,12 @@
-import React from 'react';
-import { ScrollView, View, Text, Button, StyleSheet,TouchableOpacity } from 'react-native';
-import VehicleInfoCard from './VehicleInfoCard';
-import LotSelector from './LotSelector';
-import KeysSelector from './KeysSelector';
-import { commonStyles } from '../styles/commonStyles';
-import { Colors, CommonStyles} from '../utils/AssetManager';
-
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
+import { Colors, CommonStyles } from "../utils/AssetManager";
+import KeysSelector from "./KeysSelector";
+import LotSelector from "./LotSelector";
 
 const EscalationForm = ({
   availableLots,
@@ -15,35 +16,42 @@ const EscalationForm = ({
   onLotSelect,
   onKeysSelect,
   onSubmit,
-  onStartOver
+  onStartOver,
 }) => {
   return (
-      <View style={CommonStyles.container}>
-        <Text style={styles.formTitle}>Vin Escalation</Text>
-        
-        {/* <VehicleInfoCard vehicleInfo={vehicleInfo} /> */}
+    <View style={CommonStyles.container}>
+      <Text style={styles.formTitle}>Vin Escalation</Text>
 
-        <LotSelector
-          availableLots={availableLots}
-          selectedLot={selectedLot}
-          onLotSelect={onLotSelect}
-        />
+      {/* <VehicleInfoCard vehicleInfo={vehicleInfo} /> */}
 
-        <KeysSelector
-          selectedKeys={selectedKeys}
-          onKeysSelect={onKeysSelect}
-        />
+      <LotSelector
+        availableLots={availableLots}
+        selectedLot={selectedLot}
+        onLotSelect={onLotSelect}
+      />
 
-        <View style={styles.submitContainer}>
-           <TouchableOpacity onPress={onSubmit} style={styles.button} disabled={isSubmitting || !selectedLot}>
-                  <Text style={styles.buttonContent}>{isSubmitting ? "Submitting..." : "Submit"}</Text>
-                </TouchableOpacity>
-        
-          <TouchableOpacity onPress={onStartOver} disabled={isSubmitting} style={[styles.button]}>
-                          <Text style={styles.buttonContent}>Start Over</Text>
-                        </TouchableOpacity>
-        </View>
+      <KeysSelector selectedKeys={selectedKeys} onKeysSelect={onKeysSelect} />
+
+      <View style={styles.submitContainer}>
+        <TouchableOpacity
+          onPress={onSubmit}
+          style={styles.button}
+          disabled={isSubmitting || !selectedLot}
+        >
+          <Text style={styles.buttonContent}>
+            {isSubmitting ? "Submitting..." : "Submit"}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={onStartOver}
+          disabled={isSubmitting}
+          style={[styles.button]}
+        >
+          <Text style={styles.buttonContent}>Start Over</Text>
+        </TouchableOpacity>
       </View>
+    </View>
   );
 };
 
@@ -52,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
   },
-    button: {
+  button: {
     ...CommonStyles.primaryButton,
     marginTop: 8,
   },
@@ -66,7 +74,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: Colors.secondary,
     textAlign: "center",
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 30,
   },
   submitContainer: {

@@ -1,10 +1,7 @@
-import React from 'react';
-import { ScrollView, View, Text, Button, StyleSheet,TouchableOpacity } from 'react-native';
-import VehicleInfoCard from './VehicleInfoCard';
-import LotSelector from './LotSelector';
-import KeysSelector from './KeysSelector';
-import { commonStyles } from '../styles/commonStyles';
-import { Colors, CommonStyles} from '../utils/AssetManager';
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Colors, CommonStyles } from "../utils/AssetManager";
+import KeysSelector from "./KeysSelector";
+import LotSelector from "./LotSelector";
 
 const VehicleForm = ({
   vehicleInfo,
@@ -15,39 +12,40 @@ const VehicleForm = ({
   onLotSelect,
   onKeysSelect,
   onSubmit,
-  onStartOver
+  onStartOver,
 }) => {
-
   return (
-      <View style={CommonStyles.container}>
-        <Text style={styles.formTitle}>Vin Acceptance</Text>
-        
-        {/* <VehicleInfoCard vehicleInfo={vehicleInfo} /> */}
+    <View style={CommonStyles.container}>
+      <Text style={styles.formTitle}>Vin Acceptance</Text>
 
-        <LotSelector
-          availableLots={availableLots}
-          selectedLot={selectedLot}
-          onLotSelect={onLotSelect}
-        />
+      {/* <VehicleInfoCard vehicleInfo={vehicleInfo} /> */}
 
-       {!selectedLot && <Text>Select a lot before submit</Text>}
+      <LotSelector
+        availableLots={availableLots}
+        selectedLot={selectedLot}
+        onLotSelect={onLotSelect}
+      />
 
-        <KeysSelector
-          selectedKeys={selectedKeys}
-          onKeysSelect={onKeysSelect}
-        />
+      {!selectedLot && <Text>Select a lot before submit</Text>}
 
-        <View style={styles.submitContainer}>
-           <TouchableOpacity onPress={onSubmit} style={styles.button} >
-                  <Text style={styles.buttonContent}>{isSubmitting ? "Submitting..." : "Submit Vehicle Info"}</Text>
-                </TouchableOpacity>
-         
-           <TouchableOpacity onPress={onStartOver} disabled={isSubmitting} style={[styles.button]}>
-                  <Text style={styles.buttonContent}>Start Over</Text>
-                </TouchableOpacity>
-      
-        </View>
+      <KeysSelector selectedKeys={selectedKeys} onKeysSelect={onKeysSelect} />
+
+      <View style={styles.submitContainer}>
+        <TouchableOpacity onPress={onSubmit} style={styles.button}>
+          <Text style={styles.buttonContent}>
+            {isSubmitting ? "Submitting..." : "Submit Vehicle Info"}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={onStartOver}
+          disabled={isSubmitting}
+          style={[styles.button]}
+        >
+          <Text style={styles.buttonContent}>Start Over</Text>
+        </TouchableOpacity>
       </View>
+    </View>
   );
 };
 
@@ -56,7 +54,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
   },
-    button: {
+  button: {
     ...CommonStyles.primaryButton,
     marginTop: 8,
   },
@@ -70,7 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: Colors.secondary,
     textAlign: "center",
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 30,
   },
   submitContainer: {

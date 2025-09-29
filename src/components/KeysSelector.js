@@ -1,6 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Colors } from '../utils/AssetManager';
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Colors } from "../utils/AssetManager";
 
 const KeysSelector = ({ selectedKeys, onKeysSelect }) => {
   return (
@@ -10,26 +9,34 @@ const KeysSelector = ({ selectedKeys, onKeysSelect }) => {
         <TouchableOpacity
           style={[
             styles.keyOption,
-            selectedKeys === 1 && styles.keyOptionSelected
+            selectedKeys === 1 && styles.keyOptionSelected,
           ]}
           onPress={() => onKeysSelect(1)}
         >
-          <Text style={[
-            styles.keyOptionText,
-            selectedKeys === 1 && styles.keyOptionTextSelected
-          ]}>1</Text>
+          <Text
+            style={[
+              styles.keyOptionText,
+              selectedKeys === 1 && styles.keyOptionTextSelected,
+            ]}
+          >
+            1
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.keyOption,
-            selectedKeys === 2 && styles.keyOptionSelected
+            selectedKeys === 2 && styles.keyOptionSelected,
           ]}
           onPress={() => onKeysSelect(2)}
         >
-          <Text style={[
-            styles.keyOptionText,
-            selectedKeys === 2 && styles.keyOptionTextSelected
-          ]}>2</Text>
+          <Text
+            style={[
+              styles.keyOptionText,
+              selectedKeys === 2 && styles.keyOptionTextSelected,
+            ]}
+          >
+            2
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -44,13 +51,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#fff",
     marginBottom: 15,
-    marginTop:10,
-    alignSelf:'center',
+    marginTop: 10,
+    alignSelf: "center",
     fontFamily: "InstrumentSans-Bold",
   },
   keysContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   keyOption: {
     backgroundColor: "#1a1a1a",
@@ -59,7 +66,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 20,
     minWidth: 80,
-    alignItems: 'center',
+    alignItems: "center",
   },
   keyOptionSelected: {
     borderColor: Colors.secondary,
@@ -68,7 +75,7 @@ const styles = StyleSheet.create({
   keyOptionText: {
     color: "#fff",
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   keyOptionTextSelected: {
     color: "#fff",

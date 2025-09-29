@@ -1,15 +1,24 @@
-import { useState } from 'react';
-import { Alert } from 'react-native';
-import NetworkService from '../services/NetworkService';
+import { useState } from "react";
+import { Alert } from "react-native";
+import NetworkService from "../services/NetworkService";
 
-export const useFormSubmission = (vehicleInfo, selectedLot, selectedKeys, escalationHook) => {
+export const useFormSubmission = (
+  vehicleInfo,
+  selectedLot,
+  selectedKeys,
+  escalationHook
+) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFormSubmit = async () => {
     setIsSubmitting(true);
-    console.log("Form submission initiated with:", { vehicleInfo, selectedLot, selectedKeys });
+    console.log("Form submission initiated with:", {
+      vehicleInfo,
+      selectedLot,
+      selectedKeys,
+    });
     if (!selectedLot) {
-      Alert.alert('Error', 'Please select a lot');
+      Alert.alert("Error", "Please select a lot");
       setIsSubmitting(false);
       return;
     }
@@ -20,22 +29,25 @@ export const useFormSubmission = (vehicleInfo, selectedLot, selectedKeys, escala
         vin: vehicleInfo.vin,
         timestamp_utc: new Date().toISOString(),
         assigned_lot_name: selectedLot,
-        number_of_keys: selectedKeys
+        number_of_keys: selectedKeys,
       };
 
-      console.log('Submitting VIN accept payload:', payload);
-      
-      const response = await NetworkService.post('/api/mobile/vin/accept', payload);
-      
+      console.log("Submitting VIN accept payload:", payload);
+
+      const response = await NetworkService.post(
+        "/api/mobile/vin/accept",
+        payload
+      );
+
       if (response.success) {
-         setIsSubmitting(false);
-        Alert.alert('Success', 'Vehicle information submitted successfully!', [
+        setIsSubmitting(false);
+        Alert.alert("Success", "Vehicle information submitted successfully!", [
           {
-            text: 'OK',
+            text: "OK",
             onPress: () => {
               return { success: true, data: response.data };
-            }
-          }
+            },
+          },
         ]);
         return { success: true, data: response.data };
       } else {
@@ -43,7 +55,7 @@ export const useFormSubmission = (vehicleInfo, selectedLot, selectedKeys, escala
         return { success: false, error: response.error };
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
       setIsSubmitting(false);
       return { success: false, error: error.message };
     }
@@ -51,6 +63,6 @@ export const useFormSubmission = (vehicleInfo, selectedLot, selectedKeys, escala
 
   return {
     isSubmitting,
-    handleFormSubmit
+    handleFormSubmit,
   };
 };

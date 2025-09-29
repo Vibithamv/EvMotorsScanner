@@ -1,12 +1,11 @@
-import { StyleSheet } from 'react-native';
-import { Colors} from '../utils/AssetManager';
-
+import { StyleSheet } from "react-native";
+import { Colors } from "../utils/AssetManager";
 
 export const commonStyles = StyleSheet.create({
   container: {
     flex: 1,
-     backgroundColor: Colors.background,
-        justifyContent: 'center',
+    backgroundColor: Colors.background,
+    justifyContent: "center",
   },
   center: {
     flex: 1,
@@ -22,26 +21,26 @@ export const commonStyles = StyleSheet.create({
     textAlign: "center",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
     marginTop: 20,
   },
   loadingText: {
     color: "#fff",
     fontSize: 16,
     marginTop: 20,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
 });
 
 // Theme colors
 export const theme = {
-  primary: '#005B9A',
-  background: '#FFFFFF',
-  text: '#333333',
-  error: '#ff6b6b',
-  cardBackground: '#1a1a1a',
-  borderColor: '#333',
-  textSecondary: '#ccc',
+  primary: "#005B9A",
+  background: "#FFFFFF",
+  text: "#333333",
+  error: "#ff6b6b",
+  cardBackground: "#1a1a1a",
+  borderColor: "#333",
+  textSecondary: "#ccc",
 };

@@ -1,6 +1,5 @@
-import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
 import { CameraView } from "expo-camera";
+import { StyleSheet, View } from "react-native";
 
 const ScannerView = ({ onBarcodeScanned, onManualEntry, isValidating }) => {
   return (
@@ -12,13 +11,13 @@ const ScannerView = ({ onBarcodeScanned, onManualEntry, isValidating }) => {
           barcodeTypes: ["qr", "ean13", "code128"],
         }}
       />
-      <View style={styles.overlay}>
+      {/* <View style={styles.overlay}>
         <Button 
           title="Manual Entry" 
           onPress={onManualEntry} 
           disabled={isValidating}
         />
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -28,11 +27,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   overlay: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 50,
     left: 0,
     right: 0,
-    alignItems: 'center',
+    alignItems: "center",
   },
 });
 
