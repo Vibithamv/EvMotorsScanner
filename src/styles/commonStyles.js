@@ -16,7 +16,7 @@ export const commonStyles = StyleSheet.create({
   },
   result: {
     fontSize: 18,
-    color: "#fff",
+    color: Colors.text,
     margin: 20,
     textAlign: "center",
   },
@@ -27,7 +27,7 @@ export const commonStyles = StyleSheet.create({
     marginTop: 20,
   },
   loadingText: {
-    color: "#fff",
+    color: Colors.text,
     fontSize: 16,
     marginTop: 20,
     fontStyle: "italic",

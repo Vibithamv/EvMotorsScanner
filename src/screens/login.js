@@ -2,7 +2,7 @@
 
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Alert,
   Image,
@@ -26,6 +26,7 @@ export default function LoginScreen({ navigation }) {
   const [secureTextVisible, setSecureTextVisible] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const input2Ref = useRef(null);
 
   const onLogin = async () => {
     if (!email || !password) {
@@ -91,23 +92,32 @@ export default function LoginScreen({ navigation }) {
         autoCapitalize="none"
         style={styles.input}
         textColor={Colors.text}
+        returnKeyType="next" // shows "Next" on the keyboard
+          onSubmitEditing={() => input2Ref.current.focus()} // focus next input
         theme={{ colors: { primary: Colors.primary, accent: Colors.primary } }}
       />
 
       <Text style={styles.password}>Password</Text>
 
       <TextInput
+       ref={input2Ref}
         value={password}
         onChangeText={setPassword}
         secureTextEntry={secureTextVisible}
         style={styles.input}
         textColor={Colors.text}
+        returnKeyType="done"          // shows "Done" on the keyboard
+        onSubmitEditing={() => console.log('Submit form or hide keyboard')}
         theme={{ colors: { primary: Colors.primary, accent: Colors.primary } }}
         right={
           <TextInput.Icon
             icon={secureTextVisible ? "eye-off" : "eye"}
             color={Colors.textSecondary}
-            onPress={() => setSecureTextVisible(!secureTextVisible)}
+            forceTextInputFocus={false}
+              onPress={(event) => {
+              event.preventDefault(); // prevent keyboard focus
+              setSecureTextVisible(!secureTextVisible);
+            }}
           />
         }
       />
@@ -160,7 +170,7 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: Colors.text,
     alignSelf: "center",
     position: "absolute",
     top: 174,

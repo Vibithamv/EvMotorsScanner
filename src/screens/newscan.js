@@ -188,26 +188,6 @@ export default function NewScanScreen() {
         />
       ) : (
         <View style={commonStyles.center}>
-          {/* <Text style={commonStyles.result}>{scannedData}</Text>
-          <View style={commonStyles.buttonContainer}>
-            <Button 
-              title="Scan Again" 
-              onPress={() => {
-                setScanning(true);
-                setScannedData(null);
-              }}
-              disabled={vinValidation.isValidating}
-            />
-            <Button 
-              title="Manual Entry" 
-              onPress={() => {
-                setShowManualEntry(true);
-                setScannedData(null);
-              }}
-              disabled={vinValidation.isValidating}
-            />
-          </View>
-          {vinValidation.isValidating && <Text style={commonStyles.loadingText}>Validating...</Text>} */}
         </View>
       )}
     </View>

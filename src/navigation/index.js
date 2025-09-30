@@ -50,7 +50,7 @@ const AppNavigation = () => {
             getHeaderOptions(navigation, {
               headerTitle: "New Scan",
               headerStyle: { backgroundColor: Colors.background },
-             headerTintColor: '#ffffff',  
+             headerTintColor: Colors.text,  
             })
           }
         />
@@ -63,7 +63,7 @@ const AppNavigation = () => {
               headerBackVisible: true,
               showLogout: true,
               headerStyle: { backgroundColor: Colors.background },
-             headerTintColor: '#ffffff',   
+             headerTintColor: Colors.text,   
             })
           }
         />

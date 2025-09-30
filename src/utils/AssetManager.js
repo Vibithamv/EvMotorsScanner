@@ -70,6 +70,7 @@ export const Colors = {
   warning: "#FFA500",
   info: "#005B9A",
   settingsError: "#0000",
+  black: "#000000",
 
   // UI colors
   border: "#5F6B91",
@@ -97,7 +98,7 @@ export const CommonStyles = {
   },
 
   primaryButtonText: {
-    color: "#000000",
+    color: Colors.black,
     fontSize: FontConfig.sizes.medium,
     fontWeight: FontConfig.weights.bold,
     textAlign: "center",

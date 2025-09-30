@@ -2,7 +2,7 @@
 
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
-import { useState } from "react";
+import { useState,useRef } from "react";
 import {
   Alert,
   Image,
@@ -37,7 +37,11 @@ export default function RegisterScreen({ navigation }) {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const input2Ref = useRef(null);
+  const input3Ref = useRef(null);
+  const input4Ref = useRef(null);
+  const input5Ref = useRef(null);
+  const input6Ref = useRef(null);
   const userRegisterVal = userRegister(firstName, lastName, phoneNo, email);
 
   const onConfirm = async (confirmationCode) => {
@@ -98,7 +102,7 @@ export default function RegisterScreen({ navigation }) {
         // } else {
         //   setError(result.error);
         // }
-        setError(result.error)
+        setError(result.error);
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
@@ -141,6 +145,8 @@ export default function RegisterScreen({ navigation }) {
           autoCapitalize="none"
           style={styles.input}
           textColor={Colors.text}
+          returnKeyType="next" // shows "Next" on the keyboard
+          onSubmitEditing={() => input2Ref.current.focus()} // focus next input
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
           }}
@@ -149,36 +155,45 @@ export default function RegisterScreen({ navigation }) {
         <Text style={styles.username}>Last name</Text>
         <TextInput
           // label="Username"
+          ref={input2Ref}
           value={lastName}
           onChangeText={setLastName}
           keyboardType="text"
           autoCapitalize="none"
           style={styles.input}
           textColor={Colors.text}
+            returnKeyType="next" // shows "Next" on the keyboard
+          onSubmitEditing={() => input3Ref.current.focus()} // focus next input
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
           }}
         />
         <Text style={styles.username}>Phone Number</Text>
         <TextInput
+        ref={input3Ref}
           value={phoneNo}
           onChangeText={setPhoneNumber}
           keyboardType="number-pad"
           autoCapitalize="none"
           style={styles.input}
           textColor={Colors.text}
+            returnKeyType="next" // shows "Next" on the keyboard
+          onSubmitEditing={() => input4Ref.current.focus()} // focus next input
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
           }}
         />
-        <Text style={styles.username}>Username</Text>
+        <Text style={styles.username}>Email Id</Text>
         <TextInput
+        ref={input4Ref}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
           style={styles.input}
           textColor={Colors.text}
+            returnKeyType="next" // shows "Next" on the keyboard
+          onSubmitEditing={() => input5Ref.current.focus()} // focus next input
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
           }}
@@ -187,11 +202,14 @@ export default function RegisterScreen({ navigation }) {
         <Text style={styles.password}>Password</Text>
 
         <TextInput
+        ref={input5Ref}
           value={password}
           onChangeText={setPassword}
           secureTextEntry={secureTextVisible}
           style={styles.input}
           textColor={Colors.text}
+            returnKeyType="next" // shows "Next" on the keyboard
+          onSubmitEditing={() => input6Ref.current.focus()} // focus next input
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
           }}
@@ -199,7 +217,11 @@ export default function RegisterScreen({ navigation }) {
             <TextInput.Icon
               icon={secureTextVisible ? "eye-off" : "eye"}
               color={Colors.textSecondary}
-              onPress={() => setSecureTextVisible(!secureTextVisible)}
+              forceTextInputFocus={false}
+              onPress={(event) => {
+              event.preventDefault(); // prevent keyboard focus
+              setSecureTextVisible(!secureTextVisible);
+            }}
             />
           }
         />
@@ -207,11 +229,14 @@ export default function RegisterScreen({ navigation }) {
         <Text style={styles.password}>Confirm Password</Text>
 
         <TextInput
+        ref={input6Ref}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry={secureConfirmTextVisible}
           style={styles.input}
           textColor={Colors.text}
+          returnKeyType="done"          // shows "Done" on the keyboard
+        onSubmitEditing={() => console.log('Submit form or hide keyboard')}
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
           }}
@@ -219,9 +244,11 @@ export default function RegisterScreen({ navigation }) {
             <TextInput.Icon
               icon={secureConfirmTextVisible ? "eye-off" : "eye"}
               color={Colors.textSecondary}
-              onPress={() =>
-                setSecureConfirmTextVisible(!secureConfirmTextVisible)
-              }
+              forceTextInputFocus={false}
+              onPress={(event) => {
+              event.preventDefault(); // prevent keyboard focus
+              setSecureConfirmTextVisible(!secureConfirmTextVisible);
+            }}
             />
           }
         />
@@ -270,13 +297,9 @@ const styles = StyleSheet.create({
     flexDirection: "row", // this makes children sit in a row
     alignSelf: "center", // optional, adds space between
     padding: 5,
-    //position:'absolute',
-    //top:126
   },
   header1: {
     ...CommonStyles.header1,
-    // position:'absolute',
-    // top:126,
   },
   loginText: {
     fontSize: 16,
@@ -284,8 +307,6 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     color: "#ffff",
     alignSelf: "center",
-    // position:'absolute',
-    //top:174,
     fontFamily: "InstrumentSans-Bold",
   },
   header2: {
