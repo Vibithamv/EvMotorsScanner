@@ -26,24 +26,19 @@ export default function LoginScreen({ navigation }) {
   const [secureTextVisible, setSecureTextVisible] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [error, setError] = useState("");
 
   const onLogin = async () => {
     if (!email || !password) {
-      setError("Please enter both email and password.");
       setError("Please enter both email and password.");
       return;
     }
 
     setLoading(true);
     setError("");
-    setError("");
 
     try {
       const result = await AuthService.login(email, password);
       if (result.success) {
-        navigation.replace("Home");
-        console.log("Login successful");
         navigation.replace("Home");
         console.log("Login successful");
       } else {
@@ -52,14 +47,11 @@ export default function LoginScreen({ navigation }) {
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
       console.error("Login error:", err);
-      setError("An unexpected error occurred. Please try again.");
-      console.error("Login error:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const [fontsLoaded] = Font.useFonts(AssetHelpers.getFontConfig());
   const [fontsLoaded] = Font.useFonts(AssetHelpers.getFontConfig());
 
   if (!fontsLoaded) {
@@ -85,11 +77,6 @@ export default function LoginScreen({ navigation }) {
         style={styles.logo}
         resizeMode="contain"
       />
-      <Image
-        source={Images.logoIcon}
-        style={styles.logo}
-        resizeMode="contain"
-      />
 
       <View style={styles.loginHeader}>
         <Text style={styles.header1}>Check-In</Text>
@@ -97,44 +84,27 @@ export default function LoginScreen({ navigation }) {
       </View>
       <Text style={styles.loginText}> Login</Text>
       <Text style={styles.username}>Username</Text>
-      <View style={styles.loginHeader}>
-        <Text style={styles.header1}>Check-In</Text>
-        <Text style={styles.header2}> Hub</Text>
-      </View>
-      <Text style={styles.loginText}> Login</Text>
-      <Text style={styles.username}>Username</Text>
       <TextInput
-        // label="Username"
-        // label="Username"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
         style={styles.input}
-        //  mode="outlined"
-        textColor={Colors.text}
-        //  mode="outlined"
         textColor={Colors.text}
         theme={{ colors: { primary: Colors.primary, accent: Colors.primary } }}
       />
 
       <Text style={styles.password}>Password</Text>
-      <Text style={styles.password}>Password</Text>
 
       <TextInput
-        // label="Password"
-        // label="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry={secureTextVisible}
-        //  mode="outlined"
-        //  mode="outlined"
         style={styles.input}
         textColor={Colors.text}
         theme={{ colors: { primary: Colors.primary, accent: Colors.primary } }}
         right={
           <TextInput.Icon
-            icon={secureTextVisible ? "eye-off" : "eye"}
             icon={secureTextVisible ? "eye-off" : "eye"}
             color={Colors.textSecondary}
             onPress={() => setSecureTextVisible(!secureTextVisible)}
@@ -143,16 +113,7 @@ export default function LoginScreen({ navigation }) {
       />
 
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      <TouchableOpacity
-        onPress={onLogin}
-        style={styles.button}
-        disabled={loading}
-      >
-        <Text style={styles.buttonContent}>
-          {loading ? "Logging in..." : "Login"}
-        </Text>
       <TouchableOpacity
         onPress={onLogin}
         style={styles.button}
@@ -162,20 +123,13 @@ export default function LoginScreen({ navigation }) {
           {loading ? "Logging in..." : "Login"}
         </Text>
       </TouchableOpacity>
-
-      {/* <TouchableOpacity onPress={onForgotPassword} style={styles.forgotContainer}>
-      {/* <TouchableOpacity onPress={onForgotPassword} style={styles.forgotContainer}>
-        <Text style={styles.forgotText}>Forgot Password?</Text>
-      </TouchableOpacity> */}
 
       <TouchableOpacity onPress={onRegister} style={styles.forgotContainer}>
         <Text style={styles.forgotText}>Register new user?</Text>
       </TouchableOpacity>
 
       <Image
-      <Image
         source={Images.backgroundLogo}
-        style={[{ position: "absolute", bottom: 10 }]}
         style={[{ position: "absolute", bottom: 10 }]}
         resizeMode="contain"
       />
@@ -196,51 +150,30 @@ const styles = StyleSheet.create({
   loginHeader: {
     flexDirection: "row", // this makes children sit in a row
     alignSelf: "center", // optional, adds space between
-  loginHeader: {
-    flexDirection: "row", // this makes children sit in a row
-    alignSelf: "center", // optional, adds space between
     padding: 5,
     position: "absolute",
     top: 126,
-    position: "absolute",
-    top: 126,
   },
-  header1: {
   header1: {
     ...CommonStyles.header1,
-    // position:'absolute',
-    // top:126,
   },
   loginText: {
     fontSize: 16,
-    fontStyle: "bold",
-    fontWeight: 700,
-    color: "#ffff",
-    alignSelf: "center",
-    position: "absolute",
-    top: 174,
-  loginText: {
-    fontSize: 16,
-    fontStyle: "bold",
-    fontWeight: 700,
-    color: "#ffff",
+    fontWeight: "700",
+    color: "#FFFFFF",
     alignSelf: "center",
     position: "absolute",
     top: 174,
     fontFamily: "InstrumentSans-Bold",
   },
   header2: {
-  header2: {
     ...CommonStyles.header2,
   },
   username: {
-  username: {
     ...CommonStyles.label,
   },
   password: {
-  password: {
     ...CommonStyles.label,
-    marginTop: 5,
     marginTop: 5,
   },
   input: {
@@ -256,22 +189,10 @@ const styles = StyleSheet.create({
   forgotContainer: {
     alignItems: "center",
     marginTop: 5,
-    // marginBottom:5
-  },
-  row: {
-    flexDirection: "row", // Align children horizontally
-    justifyContent: "center", // Center them in the parent
-    alignItems: "center",
-    gap: 5, // Align vertically
-    flexDirection: "row", // Align children horizontally
-    justifyContent: "center", // Center them in the parent
-    alignItems: "center",
-    gap: 5, // Align vertically
   },
   forgotText: {
     fontSize: 14,
     color: Colors.secondary,
-    marginTop: 20,
     marginTop: 20,
     fontFamily: "InstrumentSans-Regular",
   },
@@ -280,6 +201,5 @@ const styles = StyleSheet.create({
   },
   footer: {
     ...CommonStyles.footer,
-  },
   },
 });
