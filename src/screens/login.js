@@ -83,7 +83,7 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.header2}> Hub</Text>
       </View>
       <Text style={styles.loginText}> Login</Text>
-      <Text style={styles.username}>Username</Text>
+      <Text style={styles.username}>Email Id</Text>
       <TextInput
         value={email}
         onChangeText={setEmail}
