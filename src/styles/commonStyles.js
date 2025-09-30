@@ -11,7 +11,7 @@ export const commonStyles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#000",
+    backgroundColor: Colors.background,
     padding: 20,
   },
   result: {

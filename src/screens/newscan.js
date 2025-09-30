@@ -2,7 +2,7 @@
 
 import { useCameraPermissions } from "expo-camera";
 import { useEffect, useState } from "react";
-import { Alert, Button, Text, View } from "react-native";
+import { Alert, Button, Text, View, StyleSheet,TouchableOpacity, Linking } from "react-native";
 import EscalationForm from "../components/EscalationForm";
 import ScannerView from "../components/ScannerView";
 import VehicleForm from "../components/VehicleForm";
@@ -11,6 +11,7 @@ import { useEscalationSubmission } from "../hooks/useEscalationSubmission";
 import { useFormSubmission } from "../hooks/useFormSubmission";
 import { useVinValidation } from "../hooks/useVinValidation";
 import { commonStyles } from "../styles/commonStyles";
+import { Colors, CommonStyles } from "../utils/AssetManager";
 
 export default function NewScanScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -48,11 +49,25 @@ export default function NewScanScreen() {
     return <View />;
   }
 
+  const gotoSettings = () => {
+    Linking.openSettings().catch(() => {
+    console.warn("Unable to open settings");
+  });
+  }
+
   if (!permission.granted) {
     return (
-      <View style={commonStyles.center}>
-        <Text>No access to camera</Text>
-        <Button title="Allow Camera" onPress={requestPermission} />
+      <View style={styles.container}>
+        <Text style={styles.textStyle}>Please enable camera access to continue scanning.</Text>
+       
+         <TouchableOpacity
+                onPress={gotoSettings}
+                style={styles.button}
+              >
+                <Text style={styles.buttonContent}>
+                 Continue
+                </Text>
+              </TouchableOpacity>
       </View>
     );
   }
@@ -198,3 +213,26 @@ export default function NewScanScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+    container: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: Colors.background,
+    justifyContent: "center",
+  },
+  textStyle: {
+    fontSize: 16,
+    color: Colors.text, 
+    textAlign: "center",
+    marginBottom: 20,
+    fontFamily: 'System',
+  },
+  button: {
+      ...CommonStyles.primaryButton,
+      marginTop: 8,
+    },
+    buttonContent: {
+      ...CommonStyles.primaryButtonText,
+    },
+});

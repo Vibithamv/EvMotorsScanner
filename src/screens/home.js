@@ -17,6 +17,7 @@ export default function HomeScreen({ navigation }) {
         //loading={loading}
         style={styles.button}
         contentStyle={styles.buttonContent}
+        textColor="#0000"
       >
         New Scan
       </Button>

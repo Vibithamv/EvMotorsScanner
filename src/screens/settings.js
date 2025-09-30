@@ -82,16 +82,6 @@ export default function SettingsScreen({ navigation }) {
       <Text style={styles.header1}>{`Welcome\n${userName}`}</Text>
 
       <TouchableOpacity
-        onPress={onDelete}
-        style={styles.button}
-        disabled={isDeleteRequest}
-      >
-        <Text style={styles.buttonContent}>
-          {isDeleteRequest ? "Loading..." : "Profile Deletion Request"}
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
         onPress={terms}
         style={styles.button}
         disabled={isConditionRequest}
@@ -108,6 +98,15 @@ export default function SettingsScreen({ navigation }) {
       >
         <Text style={styles.buttonContent}>
           {isPolicyRequest ? "Loading..." : "Privacy policy"}
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={onDelete}
+        style={styles.button}
+        disabled={isDeleteRequest}
+      >
+        <Text style={styles.buttonContent}>
+          {isDeleteRequest ? "Loading..." : "Profile Deletion Request"}
         </Text>
       </TouchableOpacity>
     </View>

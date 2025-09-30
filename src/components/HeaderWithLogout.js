@@ -42,7 +42,7 @@ export default function HeaderWithLogout({
     title
   ) : (
     <Image
-      source={Images.evmotorsLogo}
+      source={Images.splashLogo}
       style={{ width: 180, height: 60, resizeMode: "contain" }}
     />
   );
@@ -60,7 +60,7 @@ export default function HeaderWithLogout({
   const headerRight = headerSettings ? (
     <IconButton
       icon="cog"
-      iconColor={Colors.settingsError}
+      iconColor={Colors.text}
       size={26}
       onPress={handleSettings}
       style={{ marginRight: 8 }}
@@ -68,7 +68,7 @@ export default function HeaderWithLogout({
   ) : showLogout ? (
     <IconButton
       icon="power"
-      iconColor={Colors.error}
+      iconColor={Colors.text}
       size={26}
       onPress={handleLogout}
       style={{ marginRight: 8 }}

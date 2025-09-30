@@ -8,6 +8,7 @@ import LoginScreen from "../screens/login";
 import NewScanScreen from "../screens/newscan";
 import RegisterScreen from "../screens/register";
 import SettingsScreen from "../screens/settings";
+import { Colors } from "../utils/AssetManager";
 //import ForgotPasswordScreen from './screens/ForgotPasswordScreen'; // Create this screen too
 
 const Stack = createNativeStackNavigator();
@@ -33,6 +34,7 @@ const AppNavigation = () => {
             getHeaderOptions(navigation, {
               headerBackVisible: false,
               headerSettings: true,
+              headerStyle: { backgroundColor: Colors.background },
             })
           }
         />
@@ -47,6 +49,8 @@ const AppNavigation = () => {
           options={({ navigation }) =>
             getHeaderOptions(navigation, {
               headerTitle: "New Scan",
+              headerStyle: { backgroundColor: Colors.background },
+             headerTintColor: '#ffffff',  
             })
           }
         />
@@ -58,6 +62,8 @@ const AppNavigation = () => {
               headerTitle: "Settings",
               headerBackVisible: true,
               showLogout: true,
+              headerStyle: { backgroundColor: Colors.background },
+             headerTintColor: '#ffffff',   
             })
           }
         />
