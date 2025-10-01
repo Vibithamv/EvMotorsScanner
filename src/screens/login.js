@@ -59,16 +59,12 @@ export default function LoginScreen({ navigation }) {
     return <AppLoading />;
   }
 
-  const onForgotPassword = () => {
-    // handle forgot password action
-    Alert.alert(
-      "Forgot Password",
-      "Redirect to forgot password screen or action."
-    );
-  };
-
   const onRegister = () => {
     navigation.replace("Register");
+  };
+
+   const onForgot = () => {
+  
   };
 
   return (
@@ -134,8 +130,12 @@ export default function LoginScreen({ navigation }) {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={onRegister} style={styles.forgotContainer}>
-        <Text style={styles.forgotText}>Register new user?</Text>
+      <TouchableOpacity onPress={onForgot} style={styles.signupForgotContainer}>
+        <Text style={styles.signupForgotText}>Forgot Password?</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={onRegister} style={styles.signupForgotContainer}>
+        <Text style={styles.signupForgotText}>Register new user?</Text>
       </TouchableOpacity>
 
       <Image
@@ -196,11 +196,11 @@ const styles = StyleSheet.create({
   buttonContent: {
     ...CommonStyles.primaryButtonText,
   },
-  forgotContainer: {
+  signupForgotContainer: {
     alignItems: "center",
     marginTop: 5,
   },
-  forgotText: {
+  signupForgotText: {
     fontSize: 14,
     color: Colors.secondary,
     marginTop: 20,

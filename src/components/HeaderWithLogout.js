@@ -2,6 +2,7 @@ import { Alert, Image } from "react-native";
 import { IconButton } from "react-native-paper";
 import AuthService from "../services/AuthService";
 import { Colors, Images } from "../utils/AssetManager";
+import { CommonActions } from '@react-navigation/native';
 
 /**
  * Reusable header component with logout functionality
@@ -28,7 +29,12 @@ export default function HeaderWithLogout({
         style: "destructive",
         onPress: async () => {
           await AuthService.logout();
-          navigation.replace("Login");
+          navigation.dispatch(
+  CommonActions.reset({
+    index: 0,
+    routes: [{ name: 'Login' }], // the only screen left in stack
+  })
+);
         },
       },
     ]);

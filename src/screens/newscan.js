@@ -79,15 +79,6 @@ export default function NewScanScreen() {
     handleCodeValidation(data);
   };
 
-  const handleManualCodeSubmit = (manualCode) => {
-    console.log("Manual code submitted:", manualCode);
-    if (manualCode.trim()) {
-      handleCodeValidation(manualCode.trim());
-    } else {
-      Alert.alert("Error", "Please enter a valid code");
-    }
-  };
-
   const handleCodeValidation = async (code) => {
     const result = await vinValidation.validateCode(code);
     if (result.success) {
@@ -158,10 +149,6 @@ export default function NewScanScreen() {
       {scanning ? (
         <ScannerView
           onBarcodeScanned={handleBarcodeScanned}
-          onManualEntry={() => {
-            console.log("Manual Entry Clicked");
-            handleCodeValidation("SN35X1A7B4C6D2E3G");
-          }}
         />
       ) : showVehicleForm ? (
         <VehicleForm

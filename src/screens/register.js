@@ -2,7 +2,9 @@
 
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
-import { useState,useRef } from "react";
+import { useState,useRef, useEffect} from "react";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 import {
   Alert,
   Image,
@@ -10,7 +12,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View,Keyboard
 } from "react-native";
 import { TextInput } from "react-native-paper";
 import ConfirmCodePopup from "../components/confirmCodePopup";
@@ -43,6 +45,23 @@ export default function RegisterScreen({ navigation }) {
   const input5Ref = useRef(null);
   const input6Ref = useRef(null);
   const userRegisterVal = userRegister(firstName, lastName, phoneNo, email);
+
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", (e) => {
+      console.log("Keyboard height:", e.endCoordinates.height);
+      setKeyboardHeight(e.endCoordinates.height);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   const onConfirm = async (confirmationCode) => {
     setPopupVisible(false);
@@ -122,8 +141,18 @@ export default function RegisterScreen({ navigation }) {
     navigation.replace("Login");
   };
 
+
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      
+    <KeyboardAwareScrollView
+  style={{ flex: 1 }}
+  contentContainerStyle={{ flexGrow: 1 ,justifyContent: 'flex-start'}}
+  enableOnAndroid={true}
+  keyboardShouldPersistTaps="handled"
+  extraScrollHeight={keyboardHeight} // pushes input above keyboard
+        enableAutomaticScroll={true}
+
+>
       <View style={styles.container}>
         <Image
           source={Images.logoIcon}
@@ -265,8 +294,8 @@ export default function RegisterScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={onLogin} style={styles.forgotContainer}>
-          <Text style={styles.forgotText}>
+        <TouchableOpacity onPress={onLogin} style={styles.loginContainer}>
+          <Text style={styles.loginText}>
             Already have an account? Login here
           </Text>
         </TouchableOpacity>
@@ -280,13 +309,14 @@ export default function RegisterScreen({ navigation }) {
           />
         ) : null}
       </View>
-    </ScrollView>
+
+      </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    ...CommonStyles.container,
+   ...CommonStyles.container,
   },
   logo: {
     width: 48,
@@ -329,10 +359,10 @@ const styles = StyleSheet.create({
   buttonContent: {
     ...CommonStyles.primaryButtonText,
   },
-  forgotContainer: {
+  loginContainer: {
     alignItems: "center",
     marginTop: 16,
-    marginBottom: 16,
+    marginBottom: 100,
   },
   row: {
     flexDirection: "row", // Align children horizontally
@@ -340,7 +370,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 5, // Align vertically
   },
-  forgotText: {
+  loginText: {
     fontSize: 14,
     color: Colors.secondary,
     marginTop: 10,

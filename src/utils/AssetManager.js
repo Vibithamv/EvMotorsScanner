@@ -178,7 +178,7 @@ export const CommonStyles = {
   footer: {
     position: "absolute",
     bottom: 20,
-    color: Colors.textMuted,
+    color: Colors.text,
     fontSize: FontConfig.sizes.small,
     alignSelf: "center",
     fontFamily: FontConfig.families.regular,

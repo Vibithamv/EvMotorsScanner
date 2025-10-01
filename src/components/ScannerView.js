@@ -1,7 +1,7 @@
 import { CameraView } from "expo-camera";
 import { StyleSheet, View } from "react-native";
 
-const ScannerView = ({ onBarcodeScanned, onManualEntry, isValidating }) => {
+const ScannerView = ({ onBarcodeScanned }) => {
   return (
     <View style={styles.container}>
       <CameraView
@@ -12,13 +12,6 @@ const ScannerView = ({ onBarcodeScanned, onManualEntry, isValidating }) => {
         }}
         facing="back"
       />
-      {/* <View style={styles.overlay}>
-        <Button 
-          title="Manual Entry" 
-          onPress={onManualEntry} 
-          disabled={isValidating}
-        />
-      </View> */}
     </View>
   );
 };
