@@ -1,13 +1,15 @@
 {
   "expo": {
-    "name": "EVMotorsScanner",
+    "name": "EV Motors CAREVO",
     "slug": "EVMotorsScanner",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/evmotors_logo.png",
+    "icon": "./assets/appicon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
+      "image": "./assets/splash_logo.png",
+      "resizeMode": "contain",              
       "backgroundColor": "#ffffff"
     },
     "ios": {
@@ -16,7 +18,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#00000000",
+        "foregroundImage": "./assets/appicon.png"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.evmotors.inventory.scanner",
