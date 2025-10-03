@@ -32,8 +32,8 @@ const AppNavigation = () => {
           component={HomeScreen}
           options={({ navigation }) =>
             getHeaderOptions(navigation, {
-              headerBackVisible: false,
               headerSettings: true,
+              back:false,
               headerStyle: { backgroundColor: Colors.background },
             })
           }
@@ -48,7 +48,7 @@ const AppNavigation = () => {
           component={NewScanScreen}
           options={({ navigation }) =>
             getHeaderOptions(navigation, {
-              headerTitle: "New Scan",
+              back:true,
               headerStyle: { backgroundColor: Colors.background },
              headerTintColor: Colors.text,  
             })
@@ -59,9 +59,8 @@ const AppNavigation = () => {
           component={SettingsScreen}
           options={({ navigation }) =>
             getHeaderOptions(navigation, {
-              headerTitle: "Settings",
-              headerBackVisible: true,
-              showLogout: true,
+              headerTitle: "Account",
+              back:true,
               headerStyle: { backgroundColor: Colors.background },
              headerTintColor: Colors.text,   
             })

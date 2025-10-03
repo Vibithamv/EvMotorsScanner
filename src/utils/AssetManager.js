@@ -10,6 +10,10 @@ export const Images = {
   evmotorsLogo: require("../../assets/evmotors_logo.png"),
   splashLogo: require("../../assets/splash_logo.png"),
   backgroundLogo: require("../../assets/background_logo.png"),
+  profile: require("../../assets/profile.png"),
+  delete: require("../../assets/delete.png"),
+  signout: require("../../assets/signout.png"),
+  loginLogo:require("../../assets/login_logo.png"),
 
   // UI assets
   eye: require("../../assets/eye.png"),
@@ -21,6 +25,8 @@ export const Fonts = {
   // Instrument Sans font family
   instrumentSansRegular: require("../../assets/fonts/InstrumentSans-Regular.ttf"),
   instrumentSansBold: require("../../assets/fonts/InstrumentSans-Bold.ttf"),
+   poppinsRegular: require("../../assets/fonts/Poppins-Regular.ttf"),
+  poppinsBold: require("../../assets/fonts/Poppins-Bold.ttf"),
 };
 
 // ===== FONT CONFIGURATIONS =====
@@ -29,6 +35,8 @@ export const FontConfig = {
   families: {
     regular: "InstrumentSans-Regular",
     bold: "InstrumentSans-Bold",
+    poppinsRegular: "Poppins-Regular",
+    poppinsBold: "Poppins-Bold",
   },
 
   // Font sizes
@@ -38,7 +46,7 @@ export const FontConfig = {
     large: 16,
     xlarge: 18,
     size_20: 20,
-    xxlarge: 24,
+    xxlarge: 22,
     xxxlarge: 32,
   },
 
@@ -63,6 +71,9 @@ export const Colors = {
   text: "#FFFFFF",
   textSecondary: "#5F6B91",
   textMuted: "#666666",
+  manageAccountText: "#283661",
+  deleteText: "#ABB9E3",
+  userTypeText:'#6379B5',
 
   // Status colors
   error: "#FF6B6B",
@@ -137,6 +148,12 @@ export const CommonStyles = {
     color: Colors.text,
     fontFamily: FontConfig.families.bold,
   },
+   settingsHeader1: {
+    fontSize: FontConfig.sizes.xxlarge,
+    fontWeight: FontConfig.weights.regular,
+    color: Colors.text,
+    fontFamily: FontConfig.families.poppinsRegular,
+  },
   splashHeader1: {
     fontSize: FontConfig.sizes.size_20,
     fontWeight: FontConfig.weights.bold,
@@ -194,6 +211,8 @@ export const AssetHelpers = {
   getFontConfig: () => ({
     [FontConfig.families.regular]: Fonts.instrumentSansRegular,
     [FontConfig.families.bold]: Fonts.instrumentSansBold,
+    [FontConfig.families.poppinsRegular]: Fonts.poppinsRegular,
+    [FontConfig.families.poppinsBold]: Fonts.poppinsBold,
   }),
 
   /**

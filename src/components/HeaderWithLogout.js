@@ -17,28 +17,8 @@ export default function HeaderWithLogout({
   showLogout = true,
   headerSettings = true,
   customStyles = {},
+  back
 }) {
-  const handleLogout = () => {
-    Alert.alert("Logout", "Are you sure you want to logout?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-      {
-        text: "Logout",
-        style: "destructive",
-        onPress: async () => {
-          await AuthService.logout();
-          navigation.dispatch(
-  CommonActions.reset({
-    index: 0,
-    routes: [{ name: 'Login' }], // the only screen left in stack
-  })
-);
-        },
-      },
-    ]);
-  };
 
   const handleSettings = () => {
     navigation.navigate("Settings");
@@ -48,8 +28,8 @@ export default function HeaderWithLogout({
     title
   ) : (
     <Image
-      source={Images.splashLogo}
-      style={{ width: 180, height: 60, resizeMode: "contain" }}
+      source={Images.loginLogo}
+      style={{ width: 163, height: 43, resizeMode: "contain" }}
     />
   );
 
@@ -71,19 +51,44 @@ export default function HeaderWithLogout({
       onPress={handleSettings}
       style={{ marginRight: 8 }}
     />
-  ) : showLogout ? (
+  ) 
+  // : showLogout ? (
+  //   <IconButton
+  //     icon="power"
+  //     iconColor={Colors.text}
+  //     size={26}
+  //     onPress={handleLogout}
+  //     style={{ marginRight: 8 }}
+  //   />
+  // ) 
+  : null;
+
+  const headerLeft = 
+  back?
     <IconButton
-      icon="power"
+      icon="chevron-left"
       iconColor={Colors.text}
-      size={26}
-      onPress={handleLogout}
+      size={24}
+      onPress={()=>{navigation.goBack()}}
       style={{ marginRight: 8 }}
-    />
-  ) : null;
+    /> : null;
+  
+  // : showLogout ? (
+  //   <IconButton
+  //     icon="power"
+  //     iconColor={Colors.text}
+  //     size={26}
+  //     onPress={handleLogout}
+  //     style={{ marginRight: 8 }}
+  //   />
+  // ) 
+ 
 
   return {
     headerTitle: () => headerTitle,
     headerRight: () => headerRight,
+        headerLeft: () => headerLeft,
+
     ...customStyles,
   };
 }
@@ -97,10 +102,10 @@ export default function HeaderWithLogout({
 export const getHeaderOptions = (navigation, options = {}) => {
   const {
     title = null,
-    showLogout = false,
-    headerBackVisible = true,
+    headerBackVisible = false,
     headerSettings = false,
     headerBackTitle = "Back",
+    back = false,
     ...customStyles
   } = options;
 
@@ -110,9 +115,9 @@ export const getHeaderOptions = (navigation, options = {}) => {
     ...HeaderWithLogout({
       navigation,
       title,
-      showLogout,
       headerSettings,
       customStyles,
+      back
     }),
   };
 };
