@@ -98,11 +98,22 @@ export default function NewScanScreen() {
         setScanning(false);
         setShowManualEntry(false);
       } else {
-        Alert.alert("Error", "No lots available for escalation.");
-        setScanning(true);
+        Alert.alert("Error", `${result.error.error.message}. No lots available for escalation.`,
+            [
+        {
+          text: "Ok",
+          style: "cancel",
+          onPress: () => {
+           setScanning(true);
+          },
+        },
+      ]
+        );
+        
       }
     } else {
-      setScanning(true);
+      vinValidation.isError ?
+      setScanning(true) : null;
     }
   };
 
