@@ -1,9 +1,6 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+
 import { Colors, CommonStyles } from "../utils/AssetManager";
 import KeysSelector from "./KeysSelector";
 import LotSelector from "./LotSelector";
@@ -18,25 +15,41 @@ const EscalationForm = ({
   onSubmit,
   onStartOver,
 }) => {
+  const [isError, setError] = useState(false);
+  const [selectedLotVal, setSelectedLotVal] = useState("");
   return (
     <View style={CommonStyles.container}>
-      <Text style={styles.formTitle}>Vin Escalation</Text>
-
-      {/* <VehicleInfoCard vehicleInfo={vehicleInfo} /> */}
+      <Text style={styles.formTitle}>VIN Escalation</Text>
 
       <LotSelector
         availableLots={availableLots}
-        selectedLot={selectedLot}
-        onLotSelect={onLotSelect}
+        selectedLot={(val) => {selectedLot(val)}}
+        onLotSelect={(val) => {
+            onLotSelect,
+            setError(false),
+            setSelectedLotVal(val);
+        }}
       />
+
+      {isError ? (
+        <Text style={{ color: Colors.error }}>
+          Please select a lot to continue
+        </Text>
+      ) : null}
 
       <KeysSelector selectedKeys={selectedKeys} onKeysSelect={onKeysSelect} />
 
       <View style={styles.submitContainer}>
         <TouchableOpacity
-          onPress={onSubmit}
+          onPress={() => {
+            if (!selectedLotVal) {
+              setError(true);
+            } else {
+              onSubmit();
+            }
+          }}
           style={styles.button}
-          disabled={isSubmitting || !selectedLot}
+          //disabled={isSubmitting || !selectedLot}
         >
           <Text style={styles.buttonContent}>
             {isSubmitting ? "Submitting..." : "Submit"}

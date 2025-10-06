@@ -17,11 +17,6 @@ export const useFormSubmission = (
       selectedLot,
       selectedKeys,
     });
-    if (!selectedLot) {
-      Alert.alert("Error", "Please select a lot");
-      setIsSubmitting(false);
-      return;
-    }
 
     setIsSubmitting(true);
     try {
@@ -41,14 +36,6 @@ export const useFormSubmission = (
 
       if (response.success) {
         setIsSubmitting(false);
-        Alert.alert("Success", "Vehicle information submitted successfully!", [
-          {
-            text: "OK",
-            onPress: () => {
-              return { success: true, data: response.data };
-            },
-          },
-        ]);
         return { success: true, data: response.data };
       } else {
         setIsSubmitting(false);

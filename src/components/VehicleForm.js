@@ -14,24 +14,38 @@ const VehicleForm = ({
   onSubmit,
   onStartOver,
 }) => {
+  const [isError, setError] = useState(false);
+  const [selectedLotVal, setSelectedLotVal] = useState("");
   return (
     <View style={CommonStyles.container}>
-      <Text style={styles.formTitle}>Vin Acceptance</Text>
+      <Text style={styles.formTitle}>VIN Acceptance</Text>
 
       {/* <VehicleInfoCard vehicleInfo={vehicleInfo} /> */}
 
       <LotSelector
         availableLots={availableLots}
-        selectedLot={selectedLot}
-        onLotSelect={onLotSelect}
+         selectedLot={(val) => {selectedLot(val)}}
+        onLotSelect={(val) => {
+            onLotSelect,
+            setError(false),
+            setSelectedLotVal(val);
+          }}
       />
-
-      {!selectedLot && <Text>Select a lot before submit</Text>}
+ 
+    {isError ? <Text style={{ color: Colors.error }}>
+    Please select a lot to continue
+  </Text> : null}
 
       <KeysSelector selectedKeys={selectedKeys} onKeysSelect={onKeysSelect} />
 
       <View style={styles.submitContainer}>
-        <TouchableOpacity onPress={onSubmit} style={styles.button}>
+        <TouchableOpacity onPress={() => {
+            if (!selectedLotVal) {
+              setError(true);
+            } else {
+              onSubmit();
+            }
+          }} style={styles.button}>
           <Text style={styles.buttonContent}>
             {isSubmitting ? "Submitting..." : "Submit Vehicle Info"}
           </Text>

@@ -39,6 +39,7 @@ export default function RegisterScreen({ navigation }) {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+   const [showAlert, setShowAlert] = useState(false);
   const input2Ref = useRef(null);
   const input3Ref = useRef(null);
   const input4Ref = useRef(null);
@@ -70,11 +71,7 @@ export default function RegisterScreen({ navigation }) {
       if (result.success) {
         const registerResult = await userRegisterVal.userRegisterApi();
         if (registerResult.success) {
-          Alert.alert(
-            "Success",
-            "Registration successfully confirmed. Please log in."
-          );
-          navigation.replace("Login");
+          setShowAlert(true)
         } else {
           setError(registerResult.error);
         }
@@ -309,6 +306,19 @@ export default function RegisterScreen({ navigation }) {
           />
         ) : null}
       </View>
+       {showAlert ? (
+              <CustomAlertProvider
+                title="Success"
+                description={
+                 "Registration successfully confirmed. Please log in."
+                }
+                option1="Ok"
+                handleOption1={() => {
+                  setShowAlert(false);
+                     navigation.replace("Login");
+                }}
+              />
+            ) : null}
 
       </KeyboardAwareScrollView>
   );

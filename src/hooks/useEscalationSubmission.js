@@ -15,10 +15,6 @@ export const useEscalationSubmission = (
       selectedLot,
       selectedKeys,
     });
-    if (!selectedLot) {
-      Alert.alert("Error", "Please select a lot");
-      return;
-    }
 
     setIsSubmitting(true);
     try {
@@ -38,23 +34,16 @@ export const useEscalationSubmission = (
 
       if (response.success) {
         setIsSubmitting(false);
-        Alert.alert("Success", "Vin escalation submitted successfully!", [
-          {
-            text: "OK",
-            onPress: () => {
-              return { success: true, data: response.data };
-            },
-          },
-        ]);
         return { success: true, data: response.data };
       } else {
+         console.error("Vin escalation failed", response.error.error.message);
         setIsSubmitting(false);
-        return { success: false, error: response.error };
+        return { success: false, error: response.error.error };
       }
     } catch (error) {
       console.error("Error submitting form:", error);
       setIsSubmitting(false);
-      return { success: false, error: error.message };
+      return { success: false, error: 'An error occured. Please try again.' };
     }
   };
 

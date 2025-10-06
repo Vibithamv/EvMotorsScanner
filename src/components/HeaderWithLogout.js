@@ -1,8 +1,8 @@
-import { Alert, Image } from "react-native";
+import { Alert, Image, TouchableOpacity } from "react-native";
 import { IconButton } from "react-native-paper";
 import AuthService from "../services/AuthService";
 import { Colors, Images } from "../utils/AssetManager";
-import { CommonActions } from '@react-navigation/native';
+import { CommonActions } from "@react-navigation/native";
 
 /**
  * Reusable header component with logout functionality
@@ -17,9 +17,8 @@ export default function HeaderWithLogout({
   showLogout = true,
   headerSettings = true,
   customStyles = {},
-  back
+  back,
 }) {
-
   const handleSettings = () => {
     navigation.navigate("Settings");
   };
@@ -44,15 +43,13 @@ export default function HeaderWithLogout({
   // ) : null;
 
   const headerRight = headerSettings ? (
-    <IconButton
-      icon="cog"
-      iconColor={Colors.text}
-      size={26}
-      onPress={handleSettings}
-      style={{ marginRight: 8 }}
-    />
-  ) 
-  // : showLogout ? (
+    <TouchableOpacity onPress={handleSettings}>
+      <Image
+        source={Images.profile}
+        style={{ width: 32, height: 32, resizeMode: "contain" }}
+      />
+    </TouchableOpacity>
+  ) : // : showLogout ? (
   //   <IconButton
   //     icon="power"
   //     iconColor={Colors.text}
@@ -60,19 +57,21 @@ export default function HeaderWithLogout({
   //     onPress={handleLogout}
   //     style={{ marginRight: 8 }}
   //   />
-  // ) 
-  : null;
+  // )
+  null;
 
-  const headerLeft = 
-  back?
+  const headerLeft = back ? (
     <IconButton
       icon="chevron-left"
       iconColor={Colors.text}
       size={24}
-      onPress={()=>{navigation.goBack()}}
+      onPress={() => {
+        navigation.goBack();
+      }}
       style={{ marginRight: 8 }}
-    /> : null;
-  
+    />
+  ) : null;
+
   // : showLogout ? (
   //   <IconButton
   //     icon="power"
@@ -81,13 +80,12 @@ export default function HeaderWithLogout({
   //     onPress={handleLogout}
   //     style={{ marginRight: 8 }}
   //   />
-  // ) 
- 
+  // )
 
   return {
     headerTitle: () => headerTitle,
     headerRight: () => headerRight,
-        headerLeft: () => headerLeft,
+    headerLeft: () => headerLeft,
 
     ...customStyles,
   };
@@ -117,7 +115,7 @@ export const getHeaderOptions = (navigation, options = {}) => {
       title,
       headerSettings,
       customStyles,
-      back
+      back,
     }),
   };
 };

@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import NetworkService from "../services/NetworkService";
+import { CustomAlertProvider } from "../components/CustomAlert";
 
 export const useVinValidation = () => {
-  const [isError, setIsError] = useState(false);
   const [vehicleInfo, setVehicleInfo] = useState(null);
   const [availableLots, setAvailableLots] = useState([]);
 
   const validateCode = async (code) => {
-    setIsError(false);
     try {
       const response = await NetworkService.get("/api/vin/validate", {
         vin: code,
@@ -35,10 +34,6 @@ export const useVinValidation = () => {
           ...response.data,
         });
 
-        Alert.alert(
-          "Success",
-          "Code validated successfully! Please complete the form below."
-        );
         return { success: true, data: response.data };
       } else {
         if (
@@ -50,10 +45,7 @@ export const useVinValidation = () => {
           console.log("Lots array stored:", response.error.data.lots);
           await NetworkService.storeData("lots", response.error.data.lots);
           setAvailableLots(response.error.data.lots);
-            Alert.alert(
-          "Vin validation failed",
-          response.error.error.message || "Invalid code. Please try again."
-        );
+      
         }
         setVehicleInfo({ vin: code });
       
@@ -65,19 +57,6 @@ export const useVinValidation = () => {
       }
     } catch (error) {
       console.error("Error validating code:", error);
-      Alert.alert(
-        "Error",
-        "An error occurred while validating the code.Please try again.",
-         [
-        {
-          text: "Ok",
-          style: "cancel",
-          onPress: () => {
-           setIsError(true);
-          },
-        },
-      ]
-      );
       
       return { success: false, error: error.message, status: 500 };
     } finally {
@@ -101,7 +80,6 @@ export const useVinValidation = () => {
   }, []);
 
   return {
-    isError,
     vehicleInfo,
     availableLots,
     validateCode,

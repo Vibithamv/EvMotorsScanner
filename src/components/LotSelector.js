@@ -26,8 +26,8 @@ const LotSelector = ({ availableLots, selectedLot, onLotSelect }) => {
         dropDownContainerStyle={styles.dropdownContainer}
         textStyle={{ color: "#000", fontSize: 16, fontWeight: 700 }}
         onChangeValue={(val) => {
-          selectedLot === val;
           onLotSelect(val);
+          selectedLot(val);
         }}
       />
     </View>
