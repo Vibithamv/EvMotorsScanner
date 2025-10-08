@@ -8,6 +8,7 @@ import {
   View,
   Image,
   Alert,
+  Linking,
 } from "react-native";
 import WebViewModal from "../components/WebViewModel";
 import { userProfile } from "../hooks/userProfile";
@@ -30,9 +31,9 @@ export default function SettingsScreen({ navigation }) {
   const deleteProfile = userDeletion();
   const user = userProfile();
   const [deleteProfileAlert, setdeleteProfileAlert] = useState(false);
-    const [deleteResponseAlert, setdeleteResponseAlert] = useState(false);
-   const [alertTitle, setalertTitle] = useState("");
-    const [alertDescription, setalertDescription] = useState("");
+  const [deleteResponseAlert, setdeleteResponseAlert] = useState(false);
+  const [alertTitle, setalertTitle] = useState("");
+  const [alertDescription, setalertDescription] = useState("");
 
   useEffect(() => {
     console.log("Fetching user profile data...");
@@ -78,38 +79,54 @@ export default function SettingsScreen({ navigation }) {
       const deleteResult = await deleteProfile.userDeletionApi();
 
       if (deleteResult.success) {
-        setdeleteResponseAlert(true)
-        setalertTitle("Success")
-        setalertDescription("Your request for delete profile is successfully submitted.")
+        setdeleteResponseAlert(true);
+        setalertTitle("Success");
+        setalertDescription(
+          "Your request for delete profile is successfully submitted."
+        );
         // Alert.alert(
         //   "Success",
         //   "Your request for delete profile is successfully submitted."
         // );
       } else {
-         setdeleteResponseAlert(true)
-        setalertTitle("Error")
-        setalertDescription( deleteResult.error || "An error occurred. Please try again.")
+        setdeleteResponseAlert(true);
+        setalertTitle("Error");
+        setalertDescription(
+          deleteResult.error || "An error occurred. Please try again."
+        );
         // Alert.alert(
         //   "Error",
         //   deleteResult.error || "An error occurred. Please try again."
         // );
       }
     } catch (error) {
-        setdeleteResponseAlert(true)
-        setalertTitle("Error")
-        setalertDescription( "An error occurred. Please try again.")
+      setdeleteResponseAlert(true);
+      setalertTitle("Error");
+      setalertDescription("An error occurred. Please try again.");
     }
     // finally {
     //   setIsDeleteRequest(false);
     // }
   };
 
-  const privacyPolicy = () => {
-    setVisiblePrivacyPolicy(true);
+  const privacyPolicy = async () => {
+    // setVisiblePrivacyPolicy(true);
+    const supported = await Linking.canOpenURL(
+      "https://evmotors.com/privacy-policy/"
+    );
+    if (supported) {
+      await Linking.openURL("https://evmotors.com/privacy-policy/"); // Opens in the system browser (e.g., Chrome, Safari)
+    }
   };
 
-  const terms = () => {
-    setVisibleTerms(true);
+  const terms = async () => {
+    // setVisibleTerms(true);
+    const supported = await Linking.canOpenURL(
+      "https://evmotors.com/terms-conditions/"
+    );
+    if (supported) {
+      await Linking.openURL("https://evmotors.com/terms-conditions/"); // Opens in the system browser (e.g., Chrome, Safari)
+    }
   };
 
   const handleLogout = () => {
@@ -209,61 +226,61 @@ export default function SettingsScreen({ navigation }) {
           marginVertical: 10,
         }}
       />
-      {logoutAlert ? 
-      <CustomAlertProvider
-                title="Logout"
-                description={'Are you sure you want to logout?'}
-                option2="Cancel"
-                handleOption2={() => {
-                   setLogoutAlert(false)
-                }}
-                option1="Logout"
-                handleOption1={async () => {
-                  setLogoutAlert(false)
-                   await AuthService.logout();
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: "Login" }], // the only screen left in stack
-            })
-          );
-                }}
-              /> : null}
+      {logoutAlert ? (
+        <CustomAlertProvider
+          title="Logout"
+          description={"Are you sure you want to logout?"}
+          option2="Cancel"
+          handleOption2={() => {
+            setLogoutAlert(false);
+          }}
+          option1="Logout"
+          handleOption1={async () => {
+            setLogoutAlert(false);
+            await AuthService.logout();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: "Login" }], // the only screen left in stack
+              })
+            );
+          }}
+        />
+      ) : null}
 
-               {deleteProfileAlert ? 
-      <CustomAlertProvider
-                title="Delete Profile"
-                description={'Do you want to request for profile deletion?'}
-                option2="Cancel"
-                handleOption2={() => {
-                   setdeleteProfileAlert(false)
-                }}
-                option1="Delete"
-                handleOption1={async () => {
-                  setdeleteProfileAlert(false)
-                 deleteApi();  }}
-              /> : null}
+      {deleteProfileAlert ? (
+        <CustomAlertProvider
+          title="Delete Profile"
+          description={"Do you want to request for profile deletion?"}
+          option2="Cancel"
+          handleOption2={() => {
+            setdeleteProfileAlert(false);
+          }}
+          option1="Delete"
+          handleOption1={async () => {
+            setdeleteProfileAlert(false);
+            deleteApi();
+          }}
+        />
+      ) : null}
 
-               {deleteResponseAlert ? (
+      {deleteResponseAlert ? (
         <CustomAlertProvider
           title={alertTitle}
-          description={
-           alertDescription
-          }
+          description={alertDescription}
           option1="Ok"
           handleOption1={() => {
             setdeleteResponseAlert(false);
           }}
         />
       ) : null}
-
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-   ...CommonStyles.container,
+    ...CommonStyles.container,
     alignItems: "center",
   },
   button: {
