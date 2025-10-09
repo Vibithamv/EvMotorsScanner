@@ -5,7 +5,7 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 
-const LotSelector = ({ availableLots, selectedLot, onLotSelect }) => {
+const LotSelector = ({ availableLots, onLotSelect }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(
@@ -27,7 +27,6 @@ const LotSelector = ({ availableLots, selectedLot, onLotSelect }) => {
         textStyle={{ color: "#000", fontSize: 16, fontWeight: 700 }}
         onChangeValue={(val) => {
           onLotSelect(val);
-          selectedLot(val);
         }}
       />
     </View>

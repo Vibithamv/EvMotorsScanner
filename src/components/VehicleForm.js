@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Colors, CommonStyles } from "../utils/AssetManager";
 import KeysSelector from "./KeysSelector";
@@ -24,9 +25,8 @@ const VehicleForm = ({
 
       <LotSelector
         availableLots={availableLots}
-         selectedLot={(val) => {selectedLot(val)}}
         onLotSelect={(val) => {
-            onLotSelect,
+            onLotSelect(val),
             setError(false),
             setSelectedLotVal(val);
           }}

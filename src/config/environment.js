@@ -1,6 +1,6 @@
 // Environment configuration
-// Change this value to switch between environments: 'dev', 'stage', 'prod'
-export const CURRENT_ENVIRONMENT = 'dev';
+// The environment is determined by the `__DEV__` global variable
+export const CURRENT_ENVIRONMENT = __DEV__ ? 'dev' : 'prod';
 
 // Environment-specific settings
 export const ENVIRONMENT_CONFIG = {

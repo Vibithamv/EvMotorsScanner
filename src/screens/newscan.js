@@ -32,8 +32,10 @@ export default function NewScanScreen({ navigation }) {
   const [noLotAlert, setNoLotAlert] = useState(false);
   const [vinFailedAlert, setVinFailedAlert] = useState(false);
   const [vinSuccessAlert, setVinSuccessAlert] = useState(false);
-  const [vinEscalationSuccessAlert, setVinEscalationSuccessAlert] = useState(false);
-  const [vinEscalationFailedAlert, setVinEscalationFailedAlert] = useState(false);
+  const [vinEscalationSuccessAlert, setVinEscalationSuccessAlert] =
+    useState(false);
+  const [vinEscalationFailedAlert, setVinEscalationFailedAlert] =
+    useState(false);
   const [vinAcceptSuccessAlert, setVinAcceptSuccessAlert] = useState(false);
   const [vinAcceptFailedAlert, setVinAcceptFailedAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
@@ -131,30 +133,28 @@ export default function NewScanScreen({ navigation }) {
       selectedKeys
     );
     const result = await formSubmission.handleFormSubmit();
-      if (result?.success) {
-        setVinAcceptSuccessAlert(true);
+    if (result?.success) {
+      setVinAcceptSuccessAlert(true);
       //resetForm();
-    }
-    else{
+    } else {
       setVinAcceptFailedAlert(true);
     }
-  
   };
 
   const handleEscalation = async () => {
-     console.log(
+    console.log(
       "Submitting form with lot:",
       selectedLot,
       "and keys:",
       selectedKeys
     );
     const result = await formEscalation.handleFormSubmit();
-     if (result?.success) {
+    if (result?.success) {
       setVinEscalationSuccessAlert(true);
-     // resetForm();
+      // resetForm();
     } else {
       setVinEscalationFailedAlert(true);
-      setAlertMsg(result.error.message)
+      setAlertMsg(result.error.message);
     }
   };
 
@@ -169,24 +169,27 @@ export default function NewScanScreen({ navigation }) {
   };
 
   const handleManualEntry = (vin) => {
-     setScanning(false);
+    setScanning(false);
     setShowEscalationForm(false);
     setShowVehicleForm(false);
- handleCodeValidation(vin);
-  }
+    handleCodeValidation(vin);
+  };
 
   return (
     <View style={commonStyles.container}>
       {scanning ? (
-        <ScannerView 
-        onBarcodeScanned={handleBarcodeScanned} 
-        manualEntry={handleManualEntry}/>
+        <ScannerView
+          onBarcodeScanned={handleBarcodeScanned}
+          manualEntry={handleManualEntry}
+        />
       ) : showVehicleForm ? (
         <VehicleForm
           vehicleInfo={vinValidation.vehicleInfo}
           availableLots={vinValidation.availableLots}
           selectedLot={selectedLot}
-          selectedKeys={(val) => {setSelectedLot(val)}}
+          selectedKeys={(val) => {
+            setSelectedLot(val);
+          }}
           isSubmitting={formSubmission.isSubmitting}
           onLotSelect={handleLotSelection}
           onKeysSelect={handleKeysSelection}
@@ -196,7 +199,9 @@ export default function NewScanScreen({ navigation }) {
       ) : showEscalationForm ? (
         <EscalationForm
           availableLots={vinValidation.availableLots}
-          selectedLot={(val) => {setSelectedLot(val)}}
+          selectedLot={(val) => {
+            setSelectedLot(val);
+          }}
           selectedKeys={selectedKeys}
           isSubmitting={formEscalation.isSubmitting}
           onLotSelect={handleLotSelection}
@@ -212,7 +217,8 @@ export default function NewScanScreen({ navigation }) {
           title="Error"
           description={`${alertMsg}. No lots available for escalation.`}
           option1="Ok"
-          handleOption1={() => { setNoLotAlert(false), setScanning(true);
+          handleOption1={() => {
+            setNoLotAlert(false), setScanning(true);
           }}
         />
       ) : null}
@@ -222,21 +228,19 @@ export default function NewScanScreen({ navigation }) {
           description={`${alertMsg}`}
           option1="VIN Escalation"
           handleOption1={() => {
-              setVinFailedAlert(false),
-              setShowEscalationForm(true);
+            setVinFailedAlert(false), setShowEscalationForm(true);
             setShowVehicleForm(false);
             setScanning(false);
           }}
           option2="Start Over"
           handleOption2={() => {
-              setVinFailedAlert(false),
+            setVinFailedAlert(false),
               setScanning(true),
               setShowEscalationForm(false);
           }}
           option3="Cancel"
           handleOption3={() => {
-              setVinFailedAlert(false),
-              navigation.goBack();
+            setVinFailedAlert(false), navigation.goBack();
           }}
         />
       ) : null}
@@ -248,8 +252,8 @@ export default function NewScanScreen({ navigation }) {
           }
           option1="Ok"
           handleOption1={() => {
-              vinSuccessAlert(false),
-              setShowVehicleForm(true);
+            setVinSuccessAlert(false);
+            setShowVehicleForm(true);
             setScanning(false);
             setShowEscalationForm(false);
           }}
@@ -262,53 +266,52 @@ export default function NewScanScreen({ navigation }) {
             "An error occurred while validating the code.Please try again."
           }
           option1="Ok"
-          handleOption1={() => { setErrorAlert(false), setScanning(true);
+          handleOption1={() => {
+            setErrorAlert(false), setScanning(true);
           }}
         />
       ) : null}
 
-       {vinEscalationSuccessAlert ? (
+      {vinEscalationSuccessAlert ? (
         <CustomAlertProvider
           title="Success"
-          description={
-            "Vin escalation submitted successfully!"
-          }
+          description={"Vin escalation submitted successfully!"}
           option1="Ok"
-          handleOption1={() => {setVinEscalationSuccessAlert(false);
+          handleOption1={() => {
+            setVinEscalationSuccessAlert(false);
           }}
         />
       ) : null}
-       {vinEscalationFailedAlert ? (
+      {vinEscalationFailedAlert ? (
         <CustomAlertProvider
           title="Error"
-          description={
-            alertMsg
-          }
+          description={alertMsg}
           option1="Ok"
-          handleOption1={() => { setVinEscalationFailedAlert(false);
+          handleOption1={() => {
+            setVinEscalationFailedAlert(false);
           }}
         />
       ) : null}
 
-        {vinAcceptSuccessAlert ? (
+      {vinAcceptSuccessAlert ? (
         <CustomAlertProvider
           title="Success"
-          description={
-            "Vehicle information submitted successfully!!"
-          }
+          description={"Vehicle information submitted successfully!!"}
           option1="Ok"
-          handleOption1={() => { setVinAcceptSuccessAlert(false);
+          handleOption1={() => {
+            setVinAcceptSuccessAlert(false);
           }}
         />
       ) : null}
-       {vinAcceptFailedAlert ? (
+      {vinAcceptFailedAlert ? (
         <CustomAlertProvider
           title="Error"
           description={
             "An error occured while submitting vehicle information. Please try again."
           }
           option1="Ok"
-          handleOption1={() => { setVinAcceptFailedAlert(false);
+          handleOption1={() => {
+            setVinAcceptFailedAlert(false);
           }}
         />
       ) : null}
@@ -318,7 +321,7 @@ export default function NewScanScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-   ...CommonStyles.container,
+    ...CommonStyles.container,
   },
   textStyle: {
     fontSize: 16,
