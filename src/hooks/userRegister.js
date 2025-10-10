@@ -6,20 +6,15 @@ export const userRegister = (firstName, lastName, phoneNo, email) => {
     try {
       const response = await NetworkService.post("/api/users/register", {
         cognito_user_id: userID,
-        first_name: firstName,
-        last_name: lastName,
+        firstname: firstName,
+        lastname: lastName,
         email: email,
-        phone_no: phoneNo,
+        contact_phone_no: phoneNo,
       });
 
       if (response.success) {
-        console.log(
-          "Registration completed",
-          "Your account has been registered successfully."
-        );
         return { success: true, data: response.data };
       } else {
-        console.log("Failed", "User registration failed. Please try again.");
         return { success: false, error: response.error };
       }
     } catch (error) {

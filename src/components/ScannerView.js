@@ -12,6 +12,7 @@ import React, { useState } from "react";
 const ScannerView = ({ onBarcodeScanned , manualEntry}) => {
   const [vin, setVin] = useState("");
     const [error, setError] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
 
 
   return (
@@ -26,7 +27,7 @@ const ScannerView = ({ onBarcodeScanned , manualEntry}) => {
         textAlign="center" 
       />
       {error? <Text style={[styles.regularTextStyle, { color: Colors.error,marginTop: 10 }]}>
-          {"Please enter a valid VIN number"}
+          {errorMsg}
         </Text> : null}
       <TouchableOpacity style={styles.orCircle}>
         <Text style={[styles.regularTextStyle, { color: Colors.text }]}>
@@ -52,7 +53,19 @@ const ScannerView = ({ onBarcodeScanned , manualEntry}) => {
           facing="back"
         />
       </View>
-      <TouchableOpacity style={styles.circle} onPress={()=>{vin === '' ? setError(true) : manualEntry(vin)}}>
+      <TouchableOpacity style={styles.circle} onPress={()=>{
+        if(vin === ''){
+          setError(true)
+          setErrorMsg("Please enter a valid VIN number")
+        }
+        else if(vin.length < 17){
+          setError(true)
+          setErrorMsg("VIN number must be 17 characters")
+        }
+        else{
+          manualEntry(vin)
+        }
+        }}>
         <Text style={styles.boldTextStyle}>{`SCAN\nNOW`}</Text>
       </TouchableOpacity>
       

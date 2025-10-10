@@ -6,6 +6,7 @@ import {
   Portal,
   TextInput,
 } from "react-native-paper";
+import { Colors } from "../utils/AssetManager";
 
 export default function ConfirmCodePopup({ visible, onDismiss, onConfirm }) {
   const [code, setCode] = useState("");
@@ -30,14 +31,23 @@ export default function ConfirmCodePopup({ visible, onDismiss, onConfirm }) {
 
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={onDismiss}>
-        <Dialog.Title>Enter Confirmation Code</Dialog.Title>
+      <Dialog
+        style={{ backgroundColor: Colors.text }}
+        visible={visible}
+        onDismiss={onDismiss}
+      >
+        <Dialog.Title
+          style={{ alignSelf: "center", textAlign: "center", fontSize: 18 }}
+        >
+          Enter Confirmation Code
+        </Dialog.Title>
         <Dialog.Content>
           <TextInput
             mode="outlined"
-            label="Confirmation Code"
+            // label="Confirmation Code"
             keyboardType="numeric"
             value={code}
+            style={{ height: 50 }}
             onChangeText={(t) => {
               setCode(t);
               if (error) setError("");
@@ -45,9 +55,37 @@ export default function ConfirmCodePopup({ visible, onDismiss, onConfirm }) {
           />
           {error ? <HelperText type="error">{error}</HelperText> : null}
         </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={onDismiss}>Cancel</Button>
-          <Button onPress={handleConfirm}>OK</Button>
+        <Dialog.Actions
+          style={{ flexDirection: "row", justifyContent: "space-between" }}
+        >
+          <Button
+            style={{
+              borderRadius: 8,
+              flex: 1,
+
+              alignItems: "center",
+              textAlign: "center",
+              backgroundColor: Colors.secondary,
+            }}
+            labelStyle={{ color: "white" }}
+            onPress={onDismiss}
+          >
+            Cancel
+          </Button>
+          <Button
+            style={{
+              borderRadius: 8,
+              flex: 1,
+
+              alignItems: "center",
+              textAlign: "center",
+              backgroundColor: Colors.secondary,
+            }}
+            labelStyle={{ color: "white" }}
+            onPress={handleConfirm}
+          >
+            OK
+          </Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>

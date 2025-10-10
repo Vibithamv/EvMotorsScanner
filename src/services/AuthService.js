@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COGNITO_CONFIG } from "../config/cognito";
+import NetworkService from "./NetworkService";
 
 class AuthService {
   async login(username, password) {
@@ -110,11 +111,11 @@ class AuthService {
       }
 
       const authResult = await response.json();
-      console.log("Registration successful:", authResult.userID);
+       console.log("Registration successful:", authResult.UserSub);
 
       // Store the access token
       if (authResult.UserSub) {
-        await AsyncStorage.setItem("userID", authResult.UserSub);
+        await NetworkService.storeData("userID", authResult.UserSub);
         return {
           success: true,
           userID: authResult.UserSub,
@@ -147,13 +148,13 @@ class AuthService {
       );
 
       if (!response.ok) {
+        console.error("Registration confirmation failed:", '');
         const errorData = await response.json();
         return {
           success: false,
           error: errorData.message || "Invalid username or password",
         };
       }
-
       return {
         success: true,
       };

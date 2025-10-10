@@ -105,6 +105,7 @@ class NetworkService {
    * @returns {Promise} API response
    */
   async post(endpoint, data = {}, config = {}) {
+    console.log(`POST Request to ${endpoint} with params:`, data);
     try {
       const response = await this.api.post(endpoint, data, config);
       return {

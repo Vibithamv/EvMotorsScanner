@@ -24,6 +24,7 @@ import {
   CommonStyles,
   Images,
 } from "../utils/AssetManager";
+import { CustomAlertProvider } from "../components/CustomAlert";
 
 export default function RegisterScreen({ navigation }) {
   const [firstName, setFirstName] = useState("");
@@ -39,7 +40,9 @@ export default function RegisterScreen({ navigation }) {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-   const [showAlert, setShowAlert] = useState(false);
+   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+   const [showFailedAlert, setShowFailedAlert] = useState(false);
+   const [alertDescription, setAlertDescription] = useState("");
   const input2Ref = useRef(null);
   const input3Ref = useRef(null);
   const input4Ref = useRef(null);
@@ -71,15 +74,21 @@ export default function RegisterScreen({ navigation }) {
       if (result.success) {
         const registerResult = await userRegisterVal.userRegisterApi();
         if (registerResult.success) {
-          setShowAlert(true)
+          setShowSuccessAlert(true)
         } else {
-          setError(registerResult.error);
+          setShowFailedAlert(true)
+          setAlertDescription(registerResult.error.message)
+          //setError(registerResult.error);
         }
       } else {
-        setError(result.error);
+         setShowFailedAlert(true)
+          setAlertDescription(result.error)
+        //setError(result.error);
       }
     } catch (err) {
-      setError("An unexpected error occurred. Please try again.");
+      //setError("An unexpected error occurred. Please try again.");
+      setShowFailedAlert(true)
+          setAlertDescription('An unexpected error occurred. Please try again.')
       console.error("Registration confirmation error:", err);
     } finally {
       setLoading(false);
@@ -91,6 +100,11 @@ export default function RegisterScreen({ navigation }) {
     return regex.test(email);
   };
 
+   const validatePhone = (phone) => {
+    const regex = /^\d{10}$/; 
+    return regex.test(phone);
+  };
+
   const onRegister = async () => {
     if (!firstName) return setError("Please enter first name");
     if (!lastName) return setError("Please enter last name");
@@ -99,6 +113,7 @@ export default function RegisterScreen({ navigation }) {
     if (!password) return setError("Please enter password");
     if (!confirmPassword) return setError("Please enter confirm password");
     if (password !== confirmPassword) return setError("Passwords do not match");
+    if(!validatePhone(phoneNo))return setError("Please enter a valid phone number");
 
     setLoading(true);
     setError("");
@@ -161,7 +176,7 @@ export default function RegisterScreen({ navigation }) {
           <Text style={styles.header1}>Check-In</Text>
           <Text style={styles.header2}> Hub</Text>
         </View>
-        <Text style={styles.loginText}> User Register</Text>
+        <Text style={styles.userRegisterText}> User Register</Text>
         <Text style={styles.username}>First name</Text>
         <TextInput
           // label="Username"
@@ -306,7 +321,7 @@ export default function RegisterScreen({ navigation }) {
           />
         ) : null}
       </View>
-       {showAlert ? (
+       {showSuccessAlert ? (
               <CustomAlertProvider
                 title="Success"
                 description={
@@ -314,8 +329,20 @@ export default function RegisterScreen({ navigation }) {
                 }
                 option1="Ok"
                 handleOption1={() => {
-                  setShowAlert(false);
+                  setShowSuccessAlert(false);
                      navigation.replace("Login");
+                }}
+              />
+            ) : null}
+
+              {showFailedAlert ? (
+              <CustomAlertProvider
+                title='Registration failed'
+                description={alertDescription
+                }
+                option1="Ok"
+                handleOption1={() => {
+                  setShowFailedAlert(false);
                 }}
               />
             ) : null}
@@ -327,6 +354,7 @@ export default function RegisterScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
    ...CommonStyles.container,
+   paddingTop:10
   },
   logo: {
     width: 48,
@@ -341,13 +369,14 @@ const styles = StyleSheet.create({
   header1: {
     ...CommonStyles.header1,
   },
-  loginText: {
+  userRegisterText: {
     fontSize: 16,
     fontStyle: "bold",
     fontWeight: 700,
     color: "#ffff",
     alignSelf: "center",
     fontFamily: "InstrumentSans-Bold",
+    marginBottom:5,
   },
   header2: {
     ...CommonStyles.header2,
