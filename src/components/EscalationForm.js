@@ -25,7 +25,7 @@ const EscalationForm = ({
         availableLots={availableLots}
         selectedLot={(val) => {selectedLot(val)}}
         onLotSelect={(val) => {
-            onLotSelect,
+            onLotSelect(val),
             setError(false),
             setSelectedLotVal(val);
         }}

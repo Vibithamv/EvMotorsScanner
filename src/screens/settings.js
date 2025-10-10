@@ -166,14 +166,14 @@ export default function SettingsScreen({ navigation }) {
         {/* User Type */}
       </Text>
       <Text style={styles.manageAcountStyle}>MANAGE ACCOUNT</Text>
-      <View style={styles.profileDeleteStyle}>
+      <TouchableOpacity style={styles.profileDeleteStyle} onPress={onDelete}>
         <Text style={styles.profileDeleteTextStyle}>
           Request to profile deletion
         </Text>
-        <TouchableOpacity onPress={onDelete}>
+        <View >
           <Image source={Images.delete} style={styles.deleteImage} />
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
 
       <View
         style={{
@@ -184,12 +184,12 @@ export default function SettingsScreen({ navigation }) {
         }}
       />
 
-      <View style={styles.profileDeleteStyle}>
+      <TouchableOpacity style={styles.profileDeleteStyle} onPress={handleLogout}>
         <Text style={styles.profileDeleteTextStyle}>Sign Out</Text>
-        <TouchableOpacity onPress={handleLogout}>
+        <View >
           <Image source={Images.signout} style={styles.deleteImage} />
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
       <View
         style={{
           height: 1, // thickness of the line

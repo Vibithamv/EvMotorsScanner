@@ -186,10 +186,10 @@ export default function NewScanScreen({ navigation }) {
         <VehicleForm
           vehicleInfo={vinValidation.vehicleInfo}
           availableLots={vinValidation.availableLots}
-          selectedLot={selectedLot}
-          selectedKeys={(val) => {
+          selectedLot={(val) => {
             setSelectedLot(val);
           }}
+          selectedKeys={selectedKeys}
           isSubmitting={formSubmission.isSubmitting}
           onLotSelect={handleLotSelection}
           onKeysSelect={handleKeysSelection}
@@ -279,6 +279,9 @@ export default function NewScanScreen({ navigation }) {
           option1="Ok"
           handleOption1={() => {
             setVinEscalationSuccessAlert(false);
+            setShowVehicleForm(false);
+            setScanning(true);
+            setShowEscalationForm(false);
           }}
         />
       ) : null}
@@ -300,6 +303,9 @@ export default function NewScanScreen({ navigation }) {
           option1="Ok"
           handleOption1={() => {
             setVinAcceptSuccessAlert(false);
+            setShowVehicleForm(false);
+            setScanning(true);
+            setShowEscalationForm(false);
           }}
         />
       ) : null}

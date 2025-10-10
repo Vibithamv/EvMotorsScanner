@@ -19,12 +19,14 @@ import {
   CommonStyles,
   Images
 } from "../utils/AssetManager";
+import { CustomAlertProvider } from "../components/CustomAlert";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextVisible, setSecureTextVisible] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [forgotAlert, setforgotAlert] = useState(false);
   const [error, setError] = useState("");
   const input2Ref = useRef(null);
 
@@ -64,7 +66,7 @@ export default function LoginScreen({ navigation }) {
   };
 
    const onForgot = () => {
-  
+    setforgotAlert(true)
   };
 
   return (
@@ -144,6 +146,17 @@ export default function LoginScreen({ navigation }) {
         resizeMode="contain"
       />
       <Text style={styles.footer}>© evmotors</Text>
+      {forgotAlert ? ( <CustomAlertProvider
+                title="Forgot Password?"
+                description={
+                  "Please reach out to the administrator at admin@evmotors.com to reset your password."
+                }
+                option1="Ok"
+                handleOption1={() => {
+                 setforgotAlert(false)
+                }}
+              />
+            ) : null}
     </View>
   );
 }

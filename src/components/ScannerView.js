@@ -22,7 +22,8 @@ const ScannerView = ({ onBarcodeScanned , manualEntry}) => {
         placeholderTextColor="#6379B5"
         value={vin}
         onChangeText={setVin}
-        textAlign="center" // centers the text inside the input
+        autoCapitalize="characters"
+        textAlign="center" 
       />
       {error? <Text style={[styles.regularTextStyle, { color: Colors.error,marginTop: 10 }]}>
           {"Please enter a valid VIN number"}
