@@ -23,12 +23,18 @@ class AuthService {
           }),
         }
       );
-
+      
       if (!response.ok) {
         const errorData = await response.json();
+        if (errorData.__type === "UserNotConfirmedException") {
+          return {
+            confirmedStatus: false,
+          };
+        }
         return {
           success: false,
           error: errorData.message || "Invalid username or password",
+          confirmedStatus: true
         };
       }
 
@@ -39,12 +45,14 @@ class AuthService {
           return {
             success: false,
             error: "New password required. Please contact administrator.",
+            confirmedStatus: true
           };
         }
         return {
           success: false,
           error:
             "Additional authentication required. Please contact your administrator.",
+            confirmedStatus: true
         };
       }
 
@@ -64,10 +72,11 @@ class AuthService {
         return {
           success: true,
           token: authResult.AuthenticationResult.AccessToken,
+          confirmedStatus: true
         };
       }
 
-      return { success: false, error: "Authentication failed" };
+      return { success: false, error: "Authentication failed", confirmedStatus: true};
     } catch (err) {
       console.error("Login error:", err);
       return { success: false, error: err.message || "Login failed" };
@@ -94,8 +103,6 @@ class AuthService {
                 Value: username,
               },
               { Name: "name", Value: `${firstName} ${lastName}` },
-              // Add more attributes if your pool requires them, e.g. phone_number
-              // { Name: "phone_number", Value: "+911234567890" }
             ],
           }),
         }
@@ -103,15 +110,35 @@ class AuthService {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.log("Registration failed with status:", errorData.message);
+        console.log("Registration failed with status:", errorData);
+        if (errorData.__type === "UsernameExistsException") {
+          const userStatus = await this.login(username, password);
+          if (!userStatus.confirmedStatus) {
+               const result = await this.resendConfirmationCode(username);
+            if (result.success) {
+              return {
+                confirmCodePopup: true,
+              };
+            } else {
+              return {
+                success: false,
+                error: result.error,
+              };
+            }
+          } else {
+          return {
+              navigateToLogin: true,
+            };
+          }
+        }
         return {
           success: false,
-          error: errorData.message || "Invalid username or password",
+          error: errorData.message,
         };
       }
 
       const authResult = await response.json();
-       console.log("Registration successful:", authResult.UserSub);
+      console.log("Registration successful:", authResult.UserSub);
 
       // Store the access token
       if (authResult.UserSub) {
@@ -148,13 +175,14 @@ class AuthService {
       );
 
       if (!response.ok) {
-        console.error("Registration confirmation failed:", '');
+        console.error("Registration confirmation failed:", "");
         const errorData = await response.json();
         return {
           success: false,
-          error: errorData.message || "Invalid username or password",
+          error: errorData.message,
         };
       }
+
       return {
         success: true,
       };
@@ -163,6 +191,45 @@ class AuthService {
       return {
         success: false,
         error: err.message || "Registration confirmation failed",
+      };
+    }
+  }
+
+  async resendConfirmationCode(username) {
+    try {
+      const response = await fetch(
+        `https://cognito-idp.${COGNITO_CONFIG.region}.amazonaws.com/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-amz-json-1.1",
+            "X-Amz-Target":
+              "AWSCognitoIdentityProviderService.ResendConfirmationCode",
+          },
+          body: JSON.stringify({
+            ClientId: COGNITO_CONFIG.userPoolWebClientId,
+            Username: username, // e.g. email or phone
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Resend confirmation code failed:", "");
+        const errorData = await response.json();
+        return {
+          success: false,
+          error: errorData.message,
+        };
+      }
+
+      return {
+        success: true,
+      };
+    } catch (err) {
+      console.error("Resend confirmation code error:", err);
+      return {
+        success: false,
+        error: err.message || "Resend confirmation code failed",
       };
     }
   }

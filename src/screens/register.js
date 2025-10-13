@@ -2,8 +2,8 @@
 
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
-import { useState,useRef, useEffect} from "react";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useState, useRef, useEffect } from "react";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import {
   Alert,
@@ -12,7 +12,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,Keyboard
+  View,
+  Keyboard,
 } from "react-native";
 import { TextInput } from "react-native-paper";
 import ConfirmCodePopup from "../components/confirmCodePopup";
@@ -40,9 +41,10 @@ export default function RegisterScreen({ navigation }) {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-   const [showFailedAlert, setShowFailedAlert] = useState(false);
-   const [alertDescription, setAlertDescription] = useState("");
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [showFailedAlert, setShowFailedAlert] = useState(false);
+  const [alertDescription, setAlertDescription] = useState("");
+  const [showUserExistAlert, setUserExistAlert] = useState(false);
   const input2Ref = useRef(null);
   const input3Ref = useRef(null);
   const input4Ref = useRef(null);
@@ -54,7 +56,6 @@ export default function RegisterScreen({ navigation }) {
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", (e) => {
-      console.log("Keyboard height:", e.endCoordinates.height);
       setKeyboardHeight(e.endCoordinates.height);
     });
     const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
@@ -72,23 +73,14 @@ export default function RegisterScreen({ navigation }) {
     try {
       const result = await AuthService.confirmRegister(email, confirmationCode);
       if (result.success) {
-        const registerResult = await userRegisterVal.userRegisterApi();
-        if (registerResult.success) {
-          setShowSuccessAlert(true)
-        } else {
-          setShowFailedAlert(true)
-          setAlertDescription(registerResult.error.message)
-          //setError(registerResult.error);
-        }
+        setShowSuccessAlert(true);
       } else {
-         setShowFailedAlert(true)
-          setAlertDescription(result.error)
-        //setError(result.error);
+        setShowFailedAlert(true);
+        setAlertDescription(result.error);
       }
     } catch (err) {
-      //setError("An unexpected error occurred. Please try again.");
-      setShowFailedAlert(true)
-          setAlertDescription('An unexpected error occurred. Please try again.')
+      setShowFailedAlert(true);
+      setAlertDescription("An unexpected error occurred. Please try again.");
       console.error("Registration confirmation error:", err);
     } finally {
       setLoading(false);
@@ -100,8 +92,8 @@ export default function RegisterScreen({ navigation }) {
     return regex.test(email);
   };
 
-   const validatePhone = (phone) => {
-    const regex = /^\d{10}$/; 
+  const validatePhone = (phone) => {
+    const regex = /^\d{10}$/;
     return regex.test(phone);
   };
 
@@ -113,7 +105,8 @@ export default function RegisterScreen({ navigation }) {
     if (!password) return setError("Please enter password");
     if (!confirmPassword) return setError("Please enter confirm password");
     if (password !== confirmPassword) return setError("Passwords do not match");
-    if(!validatePhone(phoneNo))return setError("Please enter a valid phone number");
+    if (!validatePhone(phoneNo))
+      return setError("Please enter a valid phone number");
 
     setLoading(true);
     setError("");
@@ -125,14 +118,20 @@ export default function RegisterScreen({ navigation }) {
         firstName,
         lastName
       );
-      if (result.success) {
+      if (result.navigateToLogin) {
+        setUserExistAlert(true);
+      } else if (result.confirmCodePopup) {
         setPopupVisible(true);
+      }
+      if (result.success) {
+        const registerResult = await userRegisterVal.userRegisterApi();
+        if (registerResult.success) {
+          setPopupVisible(true);
+        } else {
+          setShowFailedAlert(true);
+          setAlertDescription(registerResult.error.message);
+        }
       } else {
-        // if (result.error === "User already exists") {
-        //   setPopupVisible(true);
-        // } else {
-        //   setError(result.error);
-        // }
         setError(result.error);
       }
     } catch (err) {
@@ -153,18 +152,15 @@ export default function RegisterScreen({ navigation }) {
     navigation.replace("Login");
   };
 
-
   return (
-      
     <KeyboardAwareScrollView
-  style={{ flex: 1 }}
-  contentContainerStyle={{ flexGrow: 1 ,justifyContent: 'flex-start'}}
-  enableOnAndroid={true}
-  keyboardShouldPersistTaps="handled"
-  extraScrollHeight={keyboardHeight} // pushes input above keyboard
-        enableAutomaticScroll={true}
-
->
+      style={{ flex: 1 }}
+      contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start" }}
+      enableOnAndroid={true}
+      keyboardShouldPersistTaps="handled"
+      extraScrollHeight={keyboardHeight} // pushes input above keyboard
+      enableAutomaticScroll={true}
+    >
       <View style={styles.container}>
         <Image
           source={Images.logoIcon}
@@ -203,7 +199,7 @@ export default function RegisterScreen({ navigation }) {
           autoCapitalize="none"
           style={styles.input}
           textColor={Colors.text}
-            returnKeyType="next" // shows "Next" on the keyboard
+          returnKeyType="next" // shows "Next" on the keyboard
           onSubmitEditing={() => input3Ref.current.focus()} // focus next input
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
@@ -211,14 +207,14 @@ export default function RegisterScreen({ navigation }) {
         />
         <Text style={styles.username}>Phone Number</Text>
         <TextInput
-        ref={input3Ref}
+          ref={input3Ref}
           value={phoneNo}
           onChangeText={setPhoneNumber}
           keyboardType="number-pad"
           autoCapitalize="none"
           style={styles.input}
           textColor={Colors.text}
-            returnKeyType="next" // shows "Next" on the keyboard
+          returnKeyType="next" // shows "Next" on the keyboard
           onSubmitEditing={() => input4Ref.current.focus()} // focus next input
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
@@ -226,14 +222,14 @@ export default function RegisterScreen({ navigation }) {
         />
         <Text style={styles.username}>Email Id</Text>
         <TextInput
-        ref={input4Ref}
+          ref={input4Ref}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
           style={styles.input}
           textColor={Colors.text}
-            returnKeyType="next" // shows "Next" on the keyboard
+          returnKeyType="next" // shows "Next" on the keyboard
           onSubmitEditing={() => input5Ref.current.focus()} // focus next input
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
@@ -243,13 +239,13 @@ export default function RegisterScreen({ navigation }) {
         <Text style={styles.password}>Password</Text>
 
         <TextInput
-        ref={input5Ref}
+          ref={input5Ref}
           value={password}
           onChangeText={setPassword}
           secureTextEntry={secureTextVisible}
           style={styles.input}
           textColor={Colors.text}
-            returnKeyType="next" // shows "Next" on the keyboard
+          returnKeyType="next" // shows "Next" on the keyboard
           onSubmitEditing={() => input6Ref.current.focus()} // focus next input
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
@@ -260,9 +256,9 @@ export default function RegisterScreen({ navigation }) {
               color={Colors.textSecondary}
               forceTextInputFocus={false}
               onPress={(event) => {
-              event.preventDefault(); // prevent keyboard focus
-              setSecureTextVisible(!secureTextVisible);
-            }}
+                event.preventDefault(); // prevent keyboard focus
+                setSecureTextVisible(!secureTextVisible);
+              }}
             />
           }
         />
@@ -270,14 +266,14 @@ export default function RegisterScreen({ navigation }) {
         <Text style={styles.password}>Confirm Password</Text>
 
         <TextInput
-        ref={input6Ref}
+          ref={input6Ref}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry={secureConfirmTextVisible}
           style={styles.input}
           textColor={Colors.text}
-          returnKeyType="done"          // shows "Done" on the keyboard
-        onSubmitEditing={() => console.log('Submit form or hide keyboard')}
+          returnKeyType="done" // shows "Done" on the keyboard
+          onSubmitEditing={() => console.log("Submit form or hide keyboard")}
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
           }}
@@ -287,9 +283,9 @@ export default function RegisterScreen({ navigation }) {
               color={Colors.textSecondary}
               forceTextInputFocus={false}
               onPress={(event) => {
-              event.preventDefault(); // prevent keyboard focus
-              setSecureConfirmTextVisible(!secureConfirmTextVisible);
-            }}
+                event.preventDefault(); // prevent keyboard focus
+                setSecureConfirmTextVisible(!secureConfirmTextVisible);
+              }}
             />
           }
         />
@@ -321,40 +317,48 @@ export default function RegisterScreen({ navigation }) {
           />
         ) : null}
       </View>
-       {showSuccessAlert ? (
-              <CustomAlertProvider
-                title="Success"
-                description={
-                 "Registration successfully confirmed. Please log in."
-                }
-                option1="Ok"
-                handleOption1={() => {
-                  setShowSuccessAlert(false);
-                     navigation.replace("Login");
-                }}
-              />
-            ) : null}
+      {showSuccessAlert ? (
+        <CustomAlertProvider
+          title="Success"
+          description={"Registration successfully confirmed. Please log in."}
+          option1="Ok"
+          handleOption1={() => {
+            setShowSuccessAlert(false);
+            navigation.replace("Login");
+          }}
+        />
+      ) : null}
 
-              {showFailedAlert ? (
-              <CustomAlertProvider
-                title='Registration failed'
-                description={alertDescription
-                }
-                option1="Ok"
-                handleOption1={() => {
-                  setShowFailedAlert(false);
-                }}
-              />
-            ) : null}
+      {showFailedAlert ? (
+        <CustomAlertProvider
+          title="Registration failed"
+          description={alertDescription}
+          option1="Ok"
+          handleOption1={() => {
+            setShowFailedAlert(false);
+          }}
+        />
+      ) : null}
 
-      </KeyboardAwareScrollView>
+      {showUserExistAlert ? (
+        <CustomAlertProvider
+          title="Alert"
+          description="User already exists, Please login"
+          option1="Ok"
+          handleOption1={() => {
+            setUserExistAlert(false);
+            navigation.replace("Login");
+          }}
+        />
+      ) : null}
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-   ...CommonStyles.container,
-   paddingTop:10
+    ...CommonStyles.container,
+    paddingTop: 10,
   },
   logo: {
     width: 48,
@@ -376,7 +380,7 @@ const styles = StyleSheet.create({
     color: "#ffff",
     alignSelf: "center",
     fontFamily: "InstrumentSans-Bold",
-    marginBottom:5,
+    marginBottom: 5,
   },
   header2: {
     ...CommonStyles.header2,
