@@ -6,6 +6,7 @@ import KeysSelector from "./KeysSelector";
 import LotSelector from "./LotSelector";
 
 const EscalationForm = ({
+  vinNumber,
   availableLots,
   selectedLot,
   selectedKeys,
@@ -19,7 +20,9 @@ const EscalationForm = ({
   const [selectedLotVal, setSelectedLotVal] = useState("");
   return (
     <View style={CommonStyles.container}>
-      <Text style={styles.formTitle}>VIN Escalation</Text>
+      <Text style={styles.formTitle}>VIN</Text>
+      <Text style={{fontSize:18,color:Colors.text,textAlign:'center',marginBottom:40}}>{vinNumber}</Text>
+      <Text style={[styles.formTitle,{marginBottom:20}] }>VIN Escalation</Text>
 
       <LotSelector
         availableLots={availableLots}
@@ -88,7 +91,7 @@ const styles = StyleSheet.create({
     color: Colors.secondary,
     textAlign: "center",
     fontWeight: "bold",
-    marginBottom: 30,
+    marginBottom: 10,
   },
   submitContainer: {
     marginTop: 30,

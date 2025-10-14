@@ -34,48 +34,50 @@ export default function SettingsScreen({ navigation }) {
   const [deleteResponseAlert, setdeleteResponseAlert] = useState(false);
   const [alertTitle, setalertTitle] = useState("");
   const [alertDescription, setalertDescription] = useState("");
+   const [expiredAlert, setExpiredAlert] = useState(false);
 
   useEffect(() => {
-    console.log("Fetching user profile data...");
     const fetchData = async () => {
-      try {
-        const result = await user.userProfileApi();
+      try{
+     if (await AuthService.isAccessTokenExpired()) {
+    const result = await AuthService.refreshAccessToken();
+  if (result.expired) {
+    setExpiredAlert(true)    
+    }
+    else if(result.success){
+      fetchUser()
+    }
+    else{
+      Alert.alert('Alert','An error occured please try again')
+    }
+  }
+  else{
+      fetchUser()
+      } 
+     
+  }
+  catch(err){
+    Alert.alert('Alert','An error occured please try again')
+  }
+    }
+  fetchData();
+  }, []);
+
+
+  const fetchUser = async () => {
+  const result = await user.userProfileApi();
         if (result.success) {
           setUserName(result.data.firstName + " " + result.data.lastName);
         } else {
           setUserName("Guest User");
         }
-      } catch (error) {
-        setUserName("Guest User");
-      }
-    };
-    fetchData();
-  }, []);
-
+  }
   const onDelete = async () => {
-    // setIsDeleteRequest(true);
     setdeleteProfileAlert(true);
-    // Alert.alert(
-    //   "Delete Profile",
-    //   "Do you want to request for profile deletion?",
-    //   [
-    //     {
-    //       text: "Cancel",
-    //       style: "cancel",
-    //     },
-    //     {
-    //       text: "Delete",
-    //       style: "destructive",
-    //       onPress: async () => {
-    //         deleteApi();
-    //       },
-    //     },
-    //   ]
-    // );
   };
 
-  const deleteApi = async () => {
-    try {
+    const deleteApi = async () => {
+       try {
       const deleteResult = await deleteProfile.userDeletionApi();
 
       if (deleteResult.success) {
@@ -84,29 +86,37 @@ export default function SettingsScreen({ navigation }) {
         setalertDescription(
           "Your request for delete profile is successfully submitted."
         );
-        // Alert.alert(
-        //   "Success",
-        //   "Your request for delete profile is successfully submitted."
-        // );
       } else {
         setdeleteResponseAlert(true);
         setalertTitle("Error");
         setalertDescription(
           deleteResult.error || "An error occurred. Please try again."
         );
-        // Alert.alert(
-        //   "Error",
-        //   deleteResult.error || "An error occurred. Please try again."
-        // );
       }
     } catch (error) {
       setdeleteResponseAlert(true);
       setalertTitle("Error");
       setalertDescription("An error occurred. Please try again.");
     }
-    // finally {
-    //   setIsDeleteRequest(false);
-    // }
+    }
+
+  const userDelete = async () => {
+     if (await AuthService.isAccessTokenExpired()) {
+    const result = await AuthService.refreshAccessToken();
+
+  if (result.expired) {
+    setExpiredAlert(true)    
+    }
+     else if(result.success){
+      deleteApi()
+    }
+    else{
+      Alert.alert('Alert',result.error)
+    }
+  }
+  else{
+   deleteApi()
+  }
   };
 
   const privacyPolicy = async () => {
@@ -259,7 +269,7 @@ export default function SettingsScreen({ navigation }) {
           option1="Delete"
           handleOption1={async () => {
             setdeleteProfileAlert(false);
-            deleteApi();
+            userDelete();
           }}
         />
       ) : null}
@@ -274,6 +284,25 @@ export default function SettingsScreen({ navigation }) {
           }}
         />
       ) : null}
+
+       {expiredAlert ? (
+        <CustomAlertProvider
+          title='Alert'
+          description='Refresh Token is expired, Please Login again'
+          option1="Ok"
+          handleOption1={async () => {
+            setExpiredAlert(false)
+            await AuthService.logout();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: "Login" }], // the only screen left in stack
+              })
+            );
+          }}
+        />
+      ) : null}
+
     </View>
   );
 }

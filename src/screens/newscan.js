@@ -21,6 +21,8 @@ import { useVinValidation } from "../hooks/useVinValidation";
 import { commonStyles } from "../styles/commonStyles";
 import { Colors, CommonStyles } from "../utils/AssetManager";
 import { CustomAlertProvider } from "../components/CustomAlert";
+import AuthService from "../services/AuthService";
+import { CommonActions } from "@react-navigation/native";
 
 export default function NewScanScreen({ navigation }) {
   const [permission, requestPermission] = useCameraPermissions();
@@ -39,8 +41,10 @@ export default function NewScanScreen({ navigation }) {
   const [vinAcceptSuccessAlert, setVinAcceptSuccessAlert] = useState(false);
   const [vinAcceptFailedAlert, setVinAcceptFailedAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
+  const [expiredAlert, setExpiredAlert] = useState(false);
 
   const [alertMsg, setAlertMsg] = useState("");
+  const [vin, setVin] = useState("");
 
   // Custom hooks
   const vinValidation = useVinValidation();
@@ -88,11 +92,24 @@ export default function NewScanScreen({ navigation }) {
   }
 
   // Event handlers
-  const handleBarcodeScanned = ({ type, data }) => {
+  const handleBarcodeScanned = async ({ type, data }) => {
+    setVin(data);
     setScanning(false);
     setShowEscalationForm(false);
     setShowVehicleForm(false);
-    handleCodeValidation(data);
+    if (await AuthService.isAccessTokenExpired()) {
+      const result = await AuthService.refreshAccessToken();
+
+      if (result.expired) {
+        setExpiredAlert(true);
+      } else if (result.success) {
+        handleCodeValidation(data);
+      } else {
+        Alert.alert("Alert", result.error);
+      }
+    } else {
+      handleCodeValidation(data);
+    }
   };
 
   const handleCodeValidation = async (code) => {
@@ -126,35 +143,62 @@ export default function NewScanScreen({ navigation }) {
   };
 
   const handleFormSubmit = async () => {
-    console.log(
-      "Submitting form with lot:",
-      selectedLot,
-      "and keys:",
-      selectedKeys
-    );
-    const result = await formSubmission.handleFormSubmit();
-    if (result?.success) {
-      setVinAcceptSuccessAlert(true);
-      //resetForm();
+    if (await AuthService.isAccessTokenExpired()) {
+      const response = await AuthService.refreshAccessToken();
+
+      if (response.expired) {
+        setExpiredAlert(true);
+      } else if (response.success) {
+        const result = await formSubmission.handleFormSubmit();
+        if (result?.success) {
+          setVinAcceptSuccessAlert(true);
+          //resetForm();
+        } else {
+          setVinAcceptFailedAlert(true);
+        }
+      } else {
+        Alert.alert("Alert", response.error);
+        setScanning(true);
+      }
     } else {
-      setVinAcceptFailedAlert(true);
+      const result = await formSubmission.handleFormSubmit();
+      if (result?.success) {
+        setVinAcceptSuccessAlert(true);
+        //resetForm();
+      } else {
+        setVinAcceptFailedAlert(true);
+      }
     }
   };
 
   const handleEscalation = async () => {
-    console.log(
-      "Submitting form with lot:",
-      selectedLot,
-      "and keys:",
-      selectedKeys
-    );
-    const result = await formEscalation.handleFormSubmit();
-    if (result?.success) {
-      setVinEscalationSuccessAlert(true);
-      // resetForm();
+    if (await AuthService.isAccessTokenExpired()) {
+      const response = await AuthService.refreshAccessToken();
+
+      if (response.expired) {
+        setExpiredAlert(true);
+      } else if (response.success) {
+        const result = await formEscalation.handleFormSubmit();
+        if (result?.success) {
+          setVinEscalationSuccessAlert(true);
+          // resetForm();
+        } else {
+          setVinEscalationFailedAlert(true);
+          setAlertMsg(result.error.message);
+        }
+      } else {
+        Alert.alert("Alert", response.error);
+        setScanning(true);
+      }
     } else {
-      setVinEscalationFailedAlert(true);
-      setAlertMsg(result.error.message);
+      const result = await formEscalation.handleFormSubmit();
+      if (result?.success) {
+        setVinEscalationSuccessAlert(true);
+        // resetForm();
+      } else {
+        setVinEscalationFailedAlert(true);
+        setAlertMsg(result.error.message);
+      }
     }
   };
 
@@ -168,11 +212,25 @@ export default function NewScanScreen({ navigation }) {
     escalation.resetEscalation();
   };
 
-  const handleManualEntry = (vin) => {
+  const handleManualEntry = async (vin) => {
+    setVin(vin);
     setScanning(false);
     setShowEscalationForm(false);
     setShowVehicleForm(false);
-    handleCodeValidation(vin);
+    if (await AuthService.isAccessTokenExpired()) {
+      const result = await AuthService.refreshAccessToken();
+
+      if (result.expired) {
+        setExpiredAlert(true);
+      } else if (result.success) {
+        handleCodeValidation(vin);
+      } else {
+        Alert.alert("Alert", result.error);
+        setScanning(true);
+      }
+    } else {
+      handleCodeValidation(vin);
+    }
   };
 
   return (
@@ -184,6 +242,7 @@ export default function NewScanScreen({ navigation }) {
         />
       ) : showVehicleForm ? (
         <VehicleForm
+          vinNumber={vin}
           vehicleInfo={vinValidation.vehicleInfo}
           availableLots={vinValidation.availableLots}
           selectedLot={(val) => {
@@ -198,6 +257,7 @@ export default function NewScanScreen({ navigation }) {
         />
       ) : showEscalationForm ? (
         <EscalationForm
+          vinNumber={vin}
           availableLots={vinValidation.availableLots}
           selectedLot={(val) => {
             setSelectedLot(val);
@@ -228,7 +288,8 @@ export default function NewScanScreen({ navigation }) {
           description={`${alertMsg}`}
           option1="VIN Escalation"
           handleOption1={() => {
-            setVinFailedAlert(false), setShowEscalationForm(true);
+            setVinFailedAlert(false), 
+            setShowEscalationForm(true);
             setShowVehicleForm(false);
             setScanning(false);
           }}
@@ -318,6 +379,24 @@ export default function NewScanScreen({ navigation }) {
           option1="Ok"
           handleOption1={() => {
             setVinAcceptFailedAlert(false);
+          }}
+        />
+      ) : null}
+
+      {expiredAlert ? (
+        <CustomAlertProvider
+          title="Alert"
+          description="Refresh Token is expired, Please Login again"
+          option1="Ok"
+          handleOption1={async () => {
+            setExpiredAlert(false);
+            await AuthService.logout();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: "Login" }], // the only screen left in stack
+              })
+            );
           }}
         />
       ) : null}

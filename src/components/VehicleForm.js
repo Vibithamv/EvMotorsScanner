@@ -5,6 +5,7 @@ import KeysSelector from "./KeysSelector";
 import LotSelector from "./LotSelector";
 
 const VehicleForm = ({
+  vinNumber,
   vehicleInfo,
   availableLots,
   selectedLot,
@@ -19,7 +20,9 @@ const VehicleForm = ({
   const [selectedLotVal, setSelectedLotVal] = useState("");
   return (
     <View style={CommonStyles.container}>
-      <Text style={styles.formTitle}>VIN Acceptance</Text>
+       <Text style={styles.formTitle}>VIN</Text>
+       <Text style={{fontSize:18,color:Colors.text,textAlign:'center',marginBottom:40}}>{vinNumber}</Text>
+      <Text style={[styles.formTitle,{marginBottom:20}]}>VIN Acceptance</Text>
 
       {/* <VehicleInfoCard vehicleInfo={vehicleInfo} /> */}
 
@@ -83,7 +86,7 @@ const styles = StyleSheet.create({
     color: Colors.secondary,
     textAlign: "center",
     fontWeight: "bold",
-    marginBottom: 30,
+    marginBottom: 10,
   },
   submitContainer: {
     marginTop: 30,

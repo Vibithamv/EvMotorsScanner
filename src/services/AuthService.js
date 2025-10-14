@@ -23,7 +23,7 @@ class AuthService {
           }),
         }
       );
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         if (errorData.__type === "UserNotConfirmedException") {
@@ -34,7 +34,7 @@ class AuthService {
         return {
           success: false,
           error: errorData.message || "Invalid username or password",
-          confirmedStatus: true
+          confirmedStatus: true,
         };
       }
 
@@ -45,21 +45,22 @@ class AuthService {
           return {
             success: false,
             error: "New password required. Please contact administrator.",
-            confirmedStatus: true
+            confirmedStatus: true,
           };
         }
         return {
           success: false,
           error:
             "Additional authentication required. Please contact your administrator.",
-            confirmedStatus: true
+          confirmedStatus: true,
         };
       }
 
       // Store the access token
       if (
         authResult.AuthenticationResult &&
-        authResult.AuthenticationResult.AccessToken
+        authResult.AuthenticationResult.AccessToken &&
+        authResult.AuthenticationResult.RefreshToken
       ) {
         console.log(
           "Login successful with token:",
@@ -69,14 +70,22 @@ class AuthService {
           "cognitoToken",
           authResult.AuthenticationResult.AccessToken
         );
+        await AsyncStorage.setItem(
+          "cognitoRefreshToken",
+          authResult.AuthenticationResult.RefreshToken
+        );
         return {
           success: true,
           token: authResult.AuthenticationResult.AccessToken,
-          confirmedStatus: true
+          confirmedStatus: true,
         };
       }
 
-      return { success: false, error: "Authentication failed", confirmedStatus: true};
+      return {
+        success: false,
+        error: "Authentication failed",
+        confirmedStatus: true,
+      };
     } catch (err) {
       console.error("Login error:", err);
       return { success: false, error: err.message || "Login failed" };
@@ -114,7 +123,7 @@ class AuthService {
         if (errorData.__type === "UsernameExistsException") {
           const userStatus = await this.login(username, password);
           if (!userStatus.confirmedStatus) {
-               const result = await this.resendConfirmationCode(username);
+            const result = await this.resendConfirmationCode(username);
             if (result.success) {
               return {
                 confirmCodePopup: true,
@@ -126,7 +135,7 @@ class AuthService {
               };
             }
           } else {
-          return {
+            return {
               navigateToLogin: true,
             };
           }
@@ -233,6 +242,86 @@ class AuthService {
       };
     }
   }
+
+  async refreshAccessToken() {
+    const refreshToken = await AsyncStorage.getItem("cognitoRefreshToken");
+    try {
+      const response = await fetch(
+        `https://cognito-idp.${COGNITO_CONFIG.region}.amazonaws.com/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-amz-json-1.1",
+            "X-Amz-Target": "AWSCognitoIdentityProviderService.InitiateAuth",
+          },
+          body: JSON.stringify({
+            AuthFlow: "REFRESH_TOKEN_AUTH",
+            ClientId: COGNITO_CONFIG.userPoolWebClientId,
+            AuthParameters: {
+              REFRESH_TOKEN: refreshToken,
+            },
+          }),
+        }
+      );
+
+      const data = await response.json();
+      if (!response.ok) {
+        const errorType = data.__type || data.code || "";
+        if (
+          errorType.includes("NotAuthorizedException") ||
+          errorType.includes("ExpiredTokenException")
+        ) {
+          return {
+            success: false,
+            expired: true,
+            error: "Refresh token expired",
+          };
+        }
+        return {
+          success: false,
+          error: data.message || "Token refresh failed",
+        };
+      }
+
+      if (data.AuthenticationResult && data.AuthenticationResult.AccessToken) {
+        await AsyncStorage.setItem(
+          "cognitoToken",
+          data.AuthenticationResult.AccessToken
+        );
+        console.log("Tokens refreshed successfully");
+        return {
+          success: true,
+          accessToken: data.AuthenticationResult.AccessToken,
+        };
+      }
+
+      return { success: false, error: "No new token generated" };
+    } catch (err) {
+      console.error("Token refresh error:", err);
+      return {
+        success: false,
+        error: err.message || "Token refresh failed",
+      };
+    }
+  }
+
+  isAccessTokenExpired = async () => {
+    const token = await AsyncStorage.getItem("cognitoToken");
+
+    if (!token) return true;
+    try {
+      const [, payload] = token.split(".");
+      const decoded = JSON.parse(
+        atob(payload.replace(/-/g, "+").replace(/_/g, "/"))
+      );
+      const exp = decoded.exp;
+      const now = Math.floor(Date.now() / 1000);
+      console.log('detecting....', exp +' '+now)
+      return exp < now;
+    } catch (error) {
+      return true; // treat as expired if invalid
+    }
+  };
 
   async logout() {
     try {
