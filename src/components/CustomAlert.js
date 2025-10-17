@@ -1,52 +1,60 @@
 // CustomAlert.js
 import React, { useState } from "react";
-import {
-  Modal,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Colors } from "../utils/AssetManager";
 
-
-export const CustomAlertProvider = ({ title, description, option1, option2, option3, handleOption1,
-    handleOption2, handleOption3
- }) => {
+export const CustomAlertProvider = ({
+  title,
+  description,
+  option1,
+  option2,
+  option3,
+  handleOption1,
+  handleOption2,
+  handleOption3,
+}) => {
   const [visible, setVisible] = useState(true);
 
   return (
+    <Modal visible={visible} transparent animationType="fade">
+      <View style={styles.overlay}>
+        <View style={styles.box}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.message}>{description}</Text>
 
-      <Modal visible={visible} transparent animationType="fade">
-        <View style={styles.overlay}>
-          <View style={styles.box}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.message}>{description}</Text>
-
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              handleOption1(), setVisible(false);
+            }}
+          >
+            <Text style={styles.buttonText}>{option1}</Text>
+          </TouchableOpacity>
+          {option2 ? (
             <TouchableOpacity
               style={[styles.button]}
-              onPress={() => {handleOption1(), setVisible(false)}}
-            >
-              <Text style={styles.buttonText}>{option1}</Text>
-            </TouchableOpacity>
-        {option2 ? <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {handleOption2(), setVisible(false)}}
+              onPress={() => {
+                handleOption2(), setVisible(false);
+              }}
             >
               <Text style={styles.buttonText}>{option2}</Text>
-            </TouchableOpacity> : null}
-            
-            {option3 ?   <TouchableOpacity
+            </TouchableOpacity>
+          ) : null}
+
+          {option3 ? (
+            <TouchableOpacity
               style={[styles.button]}
-              onPress={() => {handleOption3(),setVisible(false)}}
+              onPress={() => {
+                handleOption3(), setVisible(false);
+              }}
             >
               <Text style={styles.buttonText}>{option3}</Text>
-            </TouchableOpacity> : null}
+            </TouchableOpacity>
+          ) : null}
 
-          
-          </View>
         </View>
-      </Modal>
+      </View>
+    </Modal>
   );
 };
 
@@ -83,9 +91,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 10,
     alignItems: "center",
-    backgroundColor: Colors.secondary
+    backgroundColor: Colors.secondary,
   },
-  buttonText:{
-    color: "white", fontWeight: "bold"
-  }
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
 });
