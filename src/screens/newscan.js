@@ -136,12 +136,13 @@ export default function NewScanScreen({ navigation }) {
         result.error.data.lots &&
         Array.isArray(result.error.data.lots)
       ) {
-        if(result.error.error.message === "VIN found but vehicle status is 'received'. Only vehicles with 'arrived' status can be validated."){
+       
+        if(result.error.data.vehicle.status === "received"){
           setVinStatus('received')
           setReceivedVinFailedAlert(true)
           setAlertMsg(result.error.error.message)
         }
-        else if( result.error.error.message === "VIN found but vehicle status is 'transfer'. Only vehicles with 'arrived' status can be validated.")
+        else if( result.error.data.vehicle.status === "transfer")
         {
           setVinStatus('transfer')
            setReceivedVinFailedAlert(true)
@@ -433,13 +434,12 @@ setVinFailedAlert(true);
           }}
           option2="Start Over"
           handleOption2={() => {
-            setVinFailedAlert(false),
-              setScanning(true),
-              setShowEscalationForm(false);
+            setReceivedVinFailedAlert(false),
+              setScanning(true);
           }}
           option3="Cancel"
           handleOption3={() => {
-            setVinFailedAlert(false), navigation.goBack();
+            setReceivedVinFailedAlert(false), navigation.goBack();
           }}
         />
       ) : null}
