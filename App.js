@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Navigation from './src/navigation/index';
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
@@ -22,8 +23,10 @@ global.process = global.process || { env: {} };
 
 export default function App() {
   return (
-    <PaperProvider>
-      <Navigation />
-    </PaperProvider>
+    <SafeAreaProvider>
+      <PaperProvider>
+        <Navigation />
+      </PaperProvider>
+    </SafeAreaProvider>
   );
 }

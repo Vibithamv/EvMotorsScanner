@@ -1,8 +1,8 @@
 // screens/LoginScreen.tsx
 
-import AppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
   Alert,
   Image,
@@ -57,8 +57,14 @@ export default function LoginScreen({ navigation }) {
 
   const [fontsLoaded] = Font.useFonts(AssetHelpers.getFontConfig());
 
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return null;
   }
 
   const onRegister = () => {
@@ -70,7 +76,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={onLayoutRootView}>
       <Image
         source={Images.logoIcon}
         style={styles.logo}
