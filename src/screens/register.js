@@ -1,8 +1,8 @@
 // screens/LoginScreen.tsx
 
-import AppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import {
@@ -144,8 +144,14 @@ export default function RegisterScreen({ navigation }) {
 
   const [fontsLoaded] = Font.useFonts(AssetHelpers.getFontConfig());
 
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return null;
   }
 
   const onLogin = () => {
@@ -160,6 +166,7 @@ export default function RegisterScreen({ navigation }) {
       keyboardShouldPersistTaps="handled"
       extraScrollHeight={keyboardHeight} // pushes input above keyboard
       enableAutomaticScroll={true}
+      onLayout={onLayoutRootView}
     >
       <View style={styles.container}>
         <Image

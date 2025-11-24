@@ -1,6 +1,6 @@
-import AppLoading from "expo-app-loading";
+import * as SplashScreenModule from "expo-splash-screen";
 import * as Font from "expo-font";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import AuthService from "../services/AuthService";
 import {
@@ -8,6 +8,9 @@ import {
   CommonStyles,
   Images
 } from "../utils/AssetManager";
+
+// Keep the splash screen visible while we fetch resources
+SplashScreenModule.preventAutoHideAsync();
 
 export default function SplashScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -41,12 +44,23 @@ export default function SplashScreen({ navigation }) {
     }
   };
 
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded && !isLoading) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreenModule.hideAsync();
+    }
+  }, [fontsLoaded, isLoading]);
+
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return null;
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={onLayoutRootView}>
       <Image
         source={Images.splashLogo}
         style={styles.evmotorsLogo}
