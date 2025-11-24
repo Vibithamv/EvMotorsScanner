@@ -1,30 +1,44 @@
 {
   "expo": {
-    "name": "EVMotorsScanner",
+    "name": "EV Motors CAREVO",
     "slug": "EVMotorsScanner",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/evmotors_logo.png",
+    "icon": "./assets/appicon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
+      "image": "./assets/splash_logo.png",
+      "resizeMode": "contain",              
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.evmotors.inventory.scanner",
+      "displayName": "EV Motors CAREVO"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#00000000",
+        "foregroundImage": "./assets/appicon.png"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.evmotors.inventory.scanner"
+      "package": "com.evmotors.inventory.scanner",
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-barcode-scanner"
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan barcodes."
+        }
+      ]
     ]
   }
 }
