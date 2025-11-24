@@ -23,16 +23,21 @@ import { Colors, CommonStyles } from "../utils/AssetManager";
 import { CustomAlertProvider } from "../components/CustomAlert";
 import AuthService from "../services/AuthService";
 import { CommonActions } from "@react-navigation/native";
+import ChangeLotForm from "../components/TransferLotForm";
+import { useLotTransferSubmission } from "../hooks/useLotTransferSubmission";
 
 export default function NewScanScreen({ navigation }) {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanning, setScanning] = useState(true);
   const [showVehicleForm, setShowVehicleForm] = useState(false);
   const [showEscalationForm, setShowEscalationForm] = useState(false);
+  const [showChangeLotForm, setShowChangeLotForm] = useState(false);
   const [selectedLot, setSelectedLot] = useState("");
+  const [driverName, setSelectedDriver] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(1);
   const [noLotAlert, setNoLotAlert] = useState(false);
-  const [vinFailedAlert, setVinFailedAlert] = useState(false);
+  const [vinFailedAlert, setVinFailedAlert] = useState(false);setReceivedVinFailedAlert
+   const [receivedVinFailedAlert, setReceivedVinFailedAlert] = useState(false);
   const [vinSuccessAlert, setVinSuccessAlert] = useState(false);
   const [vinEscalationSuccessAlert, setVinEscalationSuccessAlert] =
     useState(false);
@@ -42,7 +47,8 @@ export default function NewScanScreen({ navigation }) {
   const [vinAcceptFailedAlert, setVinAcceptFailedAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
   const [expiredAlert, setExpiredAlert] = useState(false);
-
+  const [transferLotSuccessAlert, setTransferLotSuccessAlert] = useState(false);
+  const [vinStatus, setVinStatus] = useState('');
   const [alertMsg, setAlertMsg] = useState("");
   const [vin, setVin] = useState("");
 
@@ -59,6 +65,12 @@ export default function NewScanScreen({ navigation }) {
     vinValidation.vehicleInfo,
     selectedLot,
     selectedKeys
+  );
+
+   const formTransferLot = useLotTransferSubmission(
+    vinValidation.vehicleInfo,
+    selectedLot,
+    driverName
   );
 
   useEffect(() => {
@@ -97,6 +109,7 @@ export default function NewScanScreen({ navigation }) {
     setScanning(false);
     setShowEscalationForm(false);
     setShowVehicleForm(false);
+    setShowChangeLotForm(false)
     if (await AuthService.isAccessTokenExpired()) {
       const result = await AuthService.refreshAccessToken();
 
@@ -123,8 +136,23 @@ export default function NewScanScreen({ navigation }) {
         result.error.data.lots &&
         Array.isArray(result.error.data.lots)
       ) {
-        setVinFailedAlert(true);
+       
+        if(result.error.data.vehicle.status === "received"){
+          setVinStatus('received')
+          setReceivedVinFailedAlert(true)
+          setAlertMsg(result.error.error.message)
+        }
+        else if( result.error.data.vehicle.status === "transfer")
+        {
+          setVinStatus('transfer')
+           setReceivedVinFailedAlert(true)
+          setAlertMsg(result.error.error.message)
+        }
+          else{
+setVinFailedAlert(true);
         setAlertMsg(result.error.error.message);
+        }
+        
       } else {
         setNoLotAlert(true);
         setAlertMsg(result.error.error.message);
@@ -202,12 +230,80 @@ export default function NewScanScreen({ navigation }) {
     }
   };
 
+  const handleLotTranfer = async() => {
+     if (await AuthService.isAccessTokenExpired()) {
+      const response = await AuthService.refreshAccessToken();
+
+      if (response.expired) {
+        setExpiredAlert(true);
+      } else if (response.success) {
+        const result = await formTransferLot.handleFormSubmit();
+        if (result?.success) {
+           setTransferLotSuccessAlert(true)
+           setAlertMsg('Lot transfer successfully Submitted')
+        } else {
+           setVinEscalationFailedAlert(true)
+          setAlertMsg(result.error.message)
+        }
+      } else {
+        Alert.alert("Alert", response.error);
+        setScanning(true);
+      }
+    } else {
+      const result = await formTransferLot.handleFormSubmit();
+      if (result?.success) {
+         setTransferLotSuccessAlert(true)
+         setAlertMsg('Lot transfer successfully Submitted')
+        } else {
+            setVinEscalationFailedAlert(true)
+          setAlertMsg(result.error.message)
+        }
+    }
+  }
+
+    const handleLotTranferAccept = async() => {
+     if (await AuthService.isAccessTokenExpired()) {
+      const response = await AuthService.refreshAccessToken();
+
+      if (response.expired) {
+        setExpiredAlert(true);
+      } else if (response.success) {
+      
+           const lotAcceptResponse = await formTransferLot.handleFormAccept();
+        if(lotAcceptResponse.success){
+          setTransferLotSuccessAlert(true)
+          setAlertMsg('Lot transfer accept successfully')
+        }
+        else{
+          setVinEscalationFailedAlert(true)
+          setAlertMsg(lotAcceptResponse.error.message)
+        }
+      } else {
+        Alert.alert("Alert", response.error);
+        setScanning(true);
+      }
+    } else {
+        const lotAcceptResponse = await formTransferLot.handleFormAccept();
+        if(lotAcceptResponse.success){
+            setTransferLotSuccessAlert(true)
+            setAlertMsg('Lot transfer accept successfully')
+        }
+        else{
+           setVinEscalationFailedAlert(true)
+          setAlertMsg(lotAcceptResponse.error.message)
+        }
+      
+    }
+  }
+
+
   const resetForm = () => {
     vinValidation.setVehicleInfo(null);
     setSelectedLot("");
     setSelectedKeys(1);
     setShowVehicleForm(false);
     setShowEscalationForm(false);
+    setShowChangeLotForm(false)
     setScanning(true);
     escalation.resetEscalation();
   };
@@ -217,6 +313,7 @@ export default function NewScanScreen({ navigation }) {
     setScanning(false);
     setShowEscalationForm(false);
     setShowVehicleForm(false);
+    setShowChangeLotForm(false)
     if (await AuthService.isAccessTokenExpired()) {
       const result = await AuthService.refreshAccessToken();
 
@@ -269,7 +366,23 @@ export default function NewScanScreen({ navigation }) {
           onSubmit={handleEscalation}
           onStartOver={resetForm}
         />
-      ) : (
+      ) : showChangeLotForm ?
+      (
+        <ChangeLotForm
+          vinNumber={vin}
+          availableLots={vinValidation.availableLots}
+          driverName={(val) => setSelectedDriver(val)}
+          selectedLot={(val) => {
+            setSelectedLot(val);
+          }}
+          isSubmitting={formTransferLot.isSubmitting}
+          onLotSelect={handleLotSelection}
+          onSubmit={vinStatus==='received' ? handleLotTranfer : handleLotTranferAccept}
+          onStartOver={resetForm}
+          vinStatus={vinStatus}
+        />
+      ):
+      (
         <View style={commonStyles.center}></View>
       )}
       {noLotAlert ? (
@@ -291,6 +404,7 @@ export default function NewScanScreen({ navigation }) {
             setVinFailedAlert(false), 
             setShowEscalationForm(true);
             setShowVehicleForm(false);
+            setShowChangeLotForm(false)
             setScanning(false);
           }}
           option2="Start Over"
@@ -302,6 +416,30 @@ export default function NewScanScreen({ navigation }) {
           option3="Cancel"
           handleOption3={() => {
             setVinFailedAlert(false), navigation.goBack();
+          }}
+        />
+      ) : null}
+
+      {receivedVinFailedAlert ? (
+        <CustomAlertProvider
+          title="Vin validation failed"
+          description={`${alertMsg}`}
+           option1= {vinStatus === 'received' ? "Lot Transfer" : 'Accept Lot Transfer'}
+          handleOption1={() => {
+            setReceivedVinFailedAlert(false), 
+            setShowEscalationForm(false);
+            setShowVehicleForm(false);
+            setShowChangeLotForm(true)
+            setScanning(false);
+          }}
+          option2="Start Over"
+          handleOption2={() => {
+            setReceivedVinFailedAlert(false),
+              setScanning(true);
+          }}
+          option3="Cancel"
+          handleOption3={() => {
+            setReceivedVinFailedAlert(false), navigation.goBack();
           }}
         />
       ) : null}
@@ -317,6 +455,7 @@ export default function NewScanScreen({ navigation }) {
             setShowVehicleForm(true);
             setScanning(false);
             setShowEscalationForm(false);
+            setShowChangeLotForm(false)
           }}
         />
       ) : null}
@@ -343,6 +482,7 @@ export default function NewScanScreen({ navigation }) {
             setShowVehicleForm(false);
             setScanning(true);
             setShowEscalationForm(false);
+            setShowChangeLotForm(false)
           }}
         />
       ) : null}
@@ -367,6 +507,22 @@ export default function NewScanScreen({ navigation }) {
             setShowVehicleForm(false);
             setScanning(true);
             setShowEscalationForm(false);
+            setShowChangeLotForm(false)
+          }}
+        />
+      ) : null}
+
+       {transferLotSuccessAlert ? (
+        <CustomAlertProvider
+          title="Success"
+          description={"Lot transfer accept successfully"}
+          option1="Ok"
+          handleOption1={() => {
+            setTransferLotSuccessAlert(false);
+            setShowVehicleForm(false);
+            setScanning(true);
+            setShowEscalationForm(false);
+            setShowChangeLotForm(false)
           }}
         />
       ) : null}
