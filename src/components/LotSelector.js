@@ -25,6 +25,9 @@ const LotSelector = ({ availableLots, onLotSelect }) => {
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}
         textStyle={{ color: "#000", fontSize: 16, fontWeight: 700 }}
+        zIndex={3000}
+        zIndexInverse={1000}
+        listMode="FLATLIST"
         onChangeValue={(val) => {
           onLotSelect(val);
         }}
@@ -36,12 +39,15 @@ const LotSelector = ({ availableLots, onLotSelect }) => {
 const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
+    zIndex: 3000,
   },
   dropdown: {
     borderColor: "#ccc",
+    zIndex: 3000,
   },
   dropdownContainer: {
     borderColor: "#ccc",
+    zIndex: 3000,
   },
 });
 

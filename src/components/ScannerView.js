@@ -107,10 +107,13 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "90%",
+    height: 50,
     backgroundColor: "#162142",
     color: Colors.text,
     fontSize: 16,
     borderRadius: 25,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
   },
   orCircle: {
     width: 30,
