@@ -140,13 +140,13 @@ export default function NewScanScreen({ navigation }) {
         if(result.error.data.vehicle.status === "received"){
           setVinStatus('received')
           setReceivedVinFailedAlert(true)
-          setAlertMsg(result.error.error.message)
+          setAlertMsg('This VIN is already received. You may continue with lot transfer.')
         }
         else if( result.error.data.vehicle.status === "transfer")
         {
           setVinStatus('transfer')
            setReceivedVinFailedAlert(true)
-          setAlertMsg(result.error.error.message)
+          setAlertMsg('This VIN is in transfer state. Acceptance is required to continue.')
         }
           else{
 setVinFailedAlert(true);
