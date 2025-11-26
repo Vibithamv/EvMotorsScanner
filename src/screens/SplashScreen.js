@@ -1,6 +1,6 @@
 import * as SplashScreenModule from "expo-splash-screen";
 import * as Font from "expo-font";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import AuthService from "../services/AuthService";
 import {
@@ -14,11 +14,45 @@ SplashScreenModule.preventAutoHideAsync();
 
 export default function SplashScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [fontsLoaded] = Font.useFonts(AssetHelpers.getFontConfig());
+  const [fontsLoaded, fontError] = Font.useFonts(AssetHelpers.getFontConfig());
+  const hasNavigatedRef = useRef(false);
 
   useEffect(() => {
     checkAuthenticationStatus();
+    
+    // Fallback: Force navigation after 5 seconds if still loading
+    const fallbackTimeout = setTimeout(() => {
+      if (!hasNavigatedRef.current) {
+        console.warn("Splash screen timeout - forcing navigation to Login");
+        hasNavigatedRef.current = true;
+        setIsLoading(false);
+        navigation.replace("Login");
+        SplashScreenModule.hideAsync();
+      }
+    }, 5000);
+    
+    return () => clearTimeout(fallbackTimeout);
   }, []);
+
+  // Hide splash screen after fonts load or after timeout
+  useEffect(() => {
+    let timeout;
+    const hideSplash = async () => {
+      // Wait for fonts to load or timeout after 3 seconds
+      if (fontsLoaded || fontError) {
+        await SplashScreenModule.hideAsync();
+      } else {
+        // Fallback: hide splash after 3 seconds even if fonts aren't loaded
+        timeout = setTimeout(async () => {
+          await SplashScreenModule.hideAsync();
+        }, 3000);
+      }
+    };
+    hideSplash();
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [fontsLoaded, fontError]);
 
   const checkAuthenticationStatus = async () => {
     try {
@@ -28,37 +62,38 @@ export default function SplashScreen({ navigation }) {
       // Check if user is authenticated
       const isAuthenticated = await AuthService.isAuthenticated();
 
-      if (isAuthenticated) {
-        // User is logged in, navigate to Home
-        navigation.replace("Home");
-      } else {
-        // User is not logged in, navigate to Login
-        navigation.replace("Login");
+      if (!hasNavigatedRef.current) {
+        hasNavigatedRef.current = true;
+        if (isAuthenticated) {
+          // User is logged in, navigate to Home
+          navigation.replace("Home");
+        } else {
+          // User is not logged in, navigate to Login
+          navigation.replace("Login");
+        }
       }
     } catch (error) {
       console.error("Error checking authentication status:", error);
       // On error, default to login screen
-      navigation.replace("Login");
+      if (!hasNavigatedRef.current) {
+        hasNavigatedRef.current = true;
+        navigation.replace("Login");
+      }
     } finally {
       setIsLoading(false);
+      // Ensure splash screen is hidden after auth check
+      SplashScreenModule.hideAsync().catch(console.error);
     }
   };
 
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded && !isLoading) {
-      // This tells the splash screen to hide immediately! If we call this after
-      // `setAppIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
+    // Hide splash screen once layout is complete
+    if (!isLoading) {
       await SplashScreenModule.hideAsync();
     }
-  }, [fontsLoaded, isLoading]);
+  }, [isLoading]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
+  // Always render the splash screen, even if fonts aren't loaded
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
       <Image
