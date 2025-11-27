@@ -130,6 +130,10 @@ export default function NewScanScreen({ navigation }) {
     if (result.success) {
       setVinSuccessAlert(true);
     } else if (result.status !== 500) {
+      if(result.status === 404){
+      setVinFailedAlert(true);
+      setAlertMsg(result.error.error.message);
+    }
       if (
         result.error &&
         result.error.data &&
