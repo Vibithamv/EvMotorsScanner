@@ -34,7 +34,7 @@ export default function ConfirmCodePopup({ visible, onDismiss, onConfirm }) {
       <Dialog
         style={{ backgroundColor: Colors.text }}
         visible={visible}
-        onDismiss={onDismiss}
+       // onDismiss={onDismiss}
       >
         <Dialog.Title
           style={{ alignSelf: "center", textAlign: "center", fontSize: 18 }}

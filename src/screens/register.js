@@ -98,6 +98,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   const onRegister = async () => {
+    Keyboard.dismiss();
     if (!firstName) return setError("Please enter first name");
     if (!lastName) return setError("Please enter last name");
     if (!email) return setError("Please enter email");

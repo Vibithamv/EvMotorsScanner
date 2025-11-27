@@ -422,7 +422,7 @@ setVinFailedAlert(true);
 
       {receivedVinFailedAlert ? (
         <CustomAlertProvider
-          title="Vin validation failed"
+          title="Alert"
           description={`${alertMsg}`}
            option1= {vinStatus === 'received' ? "Lot Transfer" : 'Accept Lot Transfer'}
           handleOption1={() => {
