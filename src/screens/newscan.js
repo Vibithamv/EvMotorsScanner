@@ -451,7 +451,7 @@ setVinFailedAlert(true);
         <CustomAlertProvider
           title="Success"
           description={
-            "VIN code validated successfully. Please the complete the form."
+            "VIN code validated successfully. Please complete the form."
           }
           option1="Ok"
           handleOption1={() => {
