@@ -6,19 +6,22 @@ export const CURRENT_ENVIRONMENT = __DEV__ ? 'dev' : 'prod';
 export const ENVIRONMENT_CONFIG = {
   dev: {
     name: 'Development',
-    baseURL: 'https://devinventory.evmotors.com/api',
+    // baseURL: 'https://devinventory.evmotors.com/api',
+    baseURL: 'https://inventory.evmotors.com/api',
     timeout: 10000,
     debug: true,
   },
   stage: {
     name: 'Staging',
-    baseURL: 'https://devinventory.evmotors.com/api',
+    // baseURL: 'https://devinventory.evmotors.com/api',
+    baseURL: 'https://inventory.evmotors.com/api',
     timeout: 15000,
     debug: true,
   },
   prod: {
     name: 'Production',
-    baseURL: 'https://devinventory.evmotors.com/api',
+    // baseURL: 'https://devinventory.evmotors.com/api',
+    baseURL: 'https://inventory.evmotors.com/api',
     timeout: 15000,
     debug: false,
   },

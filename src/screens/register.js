@@ -106,8 +106,8 @@ export default function RegisterScreen({ navigation }) {
     if (!password) return setError("Please enter password");
     if (!confirmPassword) return setError("Please enter confirm password");
     if (password !== confirmPassword) return setError("Passwords do not match");
-    if (!validatePhone(phoneNo))
-      return setError("Please enter a valid phone number");
+    // if (!validatePhone(phoneNo))
+    //   return setError("Please enter a valid phone number");
 
     setLoading(true);
     setError("");
@@ -213,7 +213,7 @@ export default function RegisterScreen({ navigation }) {
             colors: { primary: Colors.primary, accent: Colors.primary },
           }}
         />
-        <Text style={styles.username}>Phone Number</Text>
+        {/* <Text style={styles.username}>Phone Number</Text>
         <TextInput
           ref={input3Ref}
           value={phoneNo}
@@ -227,7 +227,7 @@ export default function RegisterScreen({ navigation }) {
           theme={{
             colors: { primary: Colors.primary, accent: Colors.primary },
           }}
-        />
+        /> */}
         <Text style={styles.username}>Email Id</Text>
         <TextInput
           ref={input4Ref}
