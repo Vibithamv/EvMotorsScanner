@@ -38,7 +38,8 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan barcodes."
         }
-      ]
+      ],
+      "expo-tracking-transparency"
     ]
   }
 }
